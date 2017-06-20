@@ -81,6 +81,10 @@ public class MainProgram {
                 matches.add(match);
             }
         }
+    
+    public void testGit(){
+    	System.out.println("hej");
+    }
 
 //	
 //	public void createMatchObjects(ArrayList<String> values){
