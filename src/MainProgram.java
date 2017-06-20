@@ -74,7 +74,7 @@ public class MainProgram {
         for(int i = 0; i < totMatches; i++) {
                 String[] params = new String[NUM_PARAM];
                 for(int j = 0; j < NUM_PARAM; j++){
-                    params[i] = values.get(i*NUM_PARAM + j);
+                    params[j] = values.get(i*NUM_PARAM + j);
                 }
                 Match match = new Match(params); // change this to accept an array of String
                 // you can now refer to the values as param[ThisClassName.LEAGUE]
