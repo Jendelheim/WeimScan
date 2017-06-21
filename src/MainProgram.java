@@ -50,11 +50,6 @@ public class MainProgram {
 		}
 	
 		createMatchObjects(values);
-		
-		// Prints values (arrayList) 
-//		for(int i = 0; i < values.size(); i++){
-//			System.out.println(values.get(i));
-//		}
 		return values; 
 	}
 	
@@ -82,9 +77,7 @@ public class MainProgram {
             }
         }
     
-    public void testGit(){
-    	System.out.println("hej");
-    }
+
 
 //	
 //	public void createMatchObjects(ArrayList<String> values){
