@@ -100,8 +100,6 @@ public class Match {
 		current_handicap = Double.parseDouble(handicaps[0]);
 		onbefore_handicap = Double.parseDouble(handicaps[1]);
 		
-		
-		
 		String[] goal_lines = total_goals.split(" ");
 
 		current_goal_line = Double.parseDouble(goal_lines[0]);
