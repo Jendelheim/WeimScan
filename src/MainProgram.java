@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,38 +11,83 @@ import org.jsoup.select.Elements;
 public class MainProgram {
 	static MainProgram program = new MainProgram();
 	ArrayList<Match> matches = new ArrayList<>(); 
+	ArrayList<Match> live_matches = new ArrayList<>(); 
+	
 
-	private enum Type {
-		STRING,
-		INT,
-		DOUBLE
-	}
+	
 
-	public static void main(String[] args) throws IOException {
-		//program.wikipediaNews();
-
-		program.totalCorner();
-
-
-	}
-
-//	public void wikipediaNews() throws IOException {
-//
-//		Document doc = Jsoup.connect("http://en.wikipedia.org/").get();
-//		Elements newsHeadlines = doc.select("#mp-itn b a");
-//
-//		System.out.println(newsHeadlines);
-//
+//	private enum Type {
+//		STRING,
+//		INT,
+//		DOUBLE
 //	}
 
-	public void totalCorner() throws IOException {
-		Document document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
-		scrapeMatchlist(document, Type.STRING, "#inplay_match_table tbody:last-of-type td");
-		loop(matches);
+	public static void main(String[] args) throws IOException {
+
+//		 Timer timer = new Timer();
+//		timer.schedule(new Receiver(), 0, 6000);
+
+		program.totalCorner();
+		program.returnFirstLiveMatch(); 
+		
+	}
+
+
 	
+	static class  Receiver extends TimerTask {
+
+
+		ArrayList<String> receivedArrayList = new ArrayList<String>(); 
+		
+		@Override
+		public void run() {
+			System.out.println("Hello world - begins");
+			try {
+				totalCorner();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			
+			System.out.println(receivedArrayList);
+			
+			System.out.println("hello world - ends");
+			
+		}
+		
+		public void totalCorner() throws IOException {
+			Document document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
+			receivedArrayList = scrapeMatchlist(document, "#inplay_match_table tbody:last-of-type td");
+		//	loop(matches);
+		//	liveMatch();
+		}
+		
+		private ArrayList<String> scrapeMatchlist(Document document, String selector) {
+			Elements elements = document.select(selector);
+			ArrayList<String> values = new ArrayList<>();
+			
+			for (Element element: elements) {
+				//System.out.println("1");
+				String str = element.text();
+			//System.out.println(str);
+				values.add(str);
+			}
+		
+			//createMatchObjects(values);
+			return values; 
+		}
+		
 	}
 	
-	private ArrayList<String> scrapeMatchlist(Document document, Type type, String selector) {
+	
+	public void totalCorner() throws IOException {
+		Document document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
+		scrapeMatchlist(document, "#inplay_match_table tbody:last-of-type td");
+		loop(matches);
+		liveMatch();
+	}
+	
+	private ArrayList<String> scrapeMatchlist(Document document, String selector) {
 		Elements elements = document.select(selector);
 		ArrayList<String> values = new ArrayList<>();
 		
@@ -53,31 +100,108 @@ public class MainProgram {
 		return values; 
 	}
 	
-	public void loop(ArrayList<Match> matches){
-		for(Match match : matches){
-			System.out.println(match);
-		}
-	}
+
 	
     public void createMatchObjects(ArrayList<String> values){
      	final int NUM_PARAM = 14;
         if(values.size() % NUM_PARAM != 0) {
             System.out.println("Expected values to be divisible by 14. They are " + values.size() + " instead");
         }
-        final int LEAGUE = 0, START_TIME = 1, MATCH_STATUS_MINUTES = 2, MATCH_HOME = 3, SCORE = 4, MATCH_AWAY = 5, MATCH_HANDICAP = 6, CORNER = 7, CORNER_LINE = 8, TOTAL_GOALS = 9, MATCH_ATTACH = 10, MATCH_SHOOT = 11, LIVE_EVENTS = 12, COL = 13;
+       // final int LEAGUE = 0, START_TIME = 1, MATCH_STATUS_MINUTES = 2, MATCH_HOME = 3, SCORE = 4, MATCH_AWAY = 5, MATCH_HANDICAP = 6, CORNER = 7, CORNER_LINE = 8, TOTAL_GOALS = 9, MATCH_ATTACH = 10, MATCH_SHOOT = 11, LIVE_EVENTS = 12, COL = 13;
         int totMatches = values.size()/NUM_PARAM;
         for(int i = 0; i < totMatches; i++) {
                 String[] params = new String[NUM_PARAM];
                 for(int j = 0; j < NUM_PARAM; j++){
                     params[j] = values.get(i*NUM_PARAM + j);
                 }
-                Match match = new Match(params); // change this to accept an array of String
-                // you can now refer to the values as param[ThisClassName.LEAGUE]
+                Match match = new Match(params); 
                 matches.add(match);
             }
         }
     
 
+    public ArrayList<Match> liveMatch(){
+    	System.out.println("Hello world");
+    	for(Match m : matches){
+    		System.out.println("hehheh");
+    		if(m.getMinutes() > 0){
+    			System.out.println("hahah");
+    			m.assignProperties();
+    			live_matches.add(m); 
+    	//	m.assignProperties();
+    		System.out.println(m.getMinutes());
+    		}
+    	}
+    	print_live_matches();
+    	return live_matches; 
+    }
+    
+
+    public Match returnFirstLiveMatch(){
+    	Match match; 
+    	match = live_matches.get(0); 
+    	System.out.println("HEHEHE");
+    	System.out.println(match);
+
+    	System.out.println("HEHEHE");
+    	
+
+//    	match.setGraphData(92, 2, 1);
+//    	match.setGraphData(93, 2, 2);
+//    	match.setGraphData(93, 3, 3);
+//    	match.setGraphData(94, 3, 4);
+//    	match.setGraphData(95, 4, 5);
+//    	match.setGraphData(95, 5, 3);
+//    	match.setGraphData(96, 6, 5);
+//    	match.setGraphData(96, 6, 6);
+//    	match.setGraphData(96, 6, 7);
+//    	match.setGraphData(96, 7, 8);
+    	
+//    	match.printData();
+    	
+    	
+    	return match; 
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public void print_live_matches(){
+    	for(Match m : live_matches){
+    		System.out.println(m);
+    	}
+    }
+    
+    
+	public void loop(ArrayList<Match> matches){
+		for(Match match : matches){
+			System.out.println(match);
+		}
+	}
+    
+    
+    
+    
+    
 
 //	
 //	public void createMatchObjects(ArrayList<String> values){
