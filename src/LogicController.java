@@ -34,26 +34,35 @@ public class LogicController {
 		else return -1; 
 	}
 	
-	public double inconsistencyScore(int match_goal_home, int match_goal_away){
-		double inconsistency = -1;  
-		if(match_goal_home > match_goal_away){
-			inconsistency = match_goal_home/match_goal_away; 
+	public double[] inconsistency(int home_value, int away_value){
+		double inconsistency = -1.0;  
+		double advantage = -1; // 1 = home, 2 = away
+		
+		
+//		System.out.println(home_value + " " + away_value);
+		if(home_value > away_value){
+			advantage = 1; 
+			if(away_value != 0){
+				inconsistency = (double) home_value/away_value; 
+			}
+			else if(away_value == 0){
+				inconsistency = home_value; 
+			}
 		}
-		else if (match_goal_home < match_goal_away){
-			inconsistency = match_goal_away/match_goal_home; 
+		else if (home_value < away_value){
+			advantage = 2; 
+			if(home_value != 0){
+				inconsistency = (double) away_value/home_value; 
+			}
+			else if(home_value == 0){
+				inconsistency = away_value; 
+			}
+			
 		}
-		return inconsistency;
+		System.out.println("Advantage: " + advantage + " inconsistency: " + inconsistency + " home_value " + home_value + " away_value " + away_value);
+		return new double[] {advantage + inconsistency};
 	}
 	
-	public double inconsistencyShotsOnTarget(int match_attach_home, int match_attach_away){
-		double inconsistency = -1;  
-		if(match_attach_home > match_attach_away){
-			inconsistency = match_attach_home/match_attach_away; 
-		}
-		else if (match_attach_home < match_attach_away){
-			inconsistency = match_attach_away/match_attach_home; 
-		}
-		return inconsistency;
-	}
+
 
 }
