@@ -117,6 +117,9 @@ public class MainProgram {
 
 		});
 
+		
+		
+		
 		System.err.println("totalCorner();");
 		program.totalCorner();
 
