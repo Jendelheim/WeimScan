@@ -1,4 +1,6 @@
 import java.io.IOException;
+
+import java.util.Scanner; 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Timer;
@@ -31,19 +33,206 @@ public class MainProgram {
 		// Timer timer = new Timer();
 		// timer.schedule(new Receiver(), 0, 6000);
 
+		program.addThread().start(); 
+		program.initializeScanner();
+		
+//		System.err.println("totalCorner();");
+//		program.totalCorner();
+//
+//		System.err.println("liveMatch();");
+//		program.liveMatch();
+//		System.err.println("print_live_matches();");
+//		program.print_live_matches();
+//
+//		System.err.println("returnFirstLiveMatch();");
+//		program.returnFirstLiveMatch();
+
+		System.err.println("FINISHED!!");
+
+	}
+
+	// static class Receiver extends TimerTask {
+	//
+	// ArrayList<String> receivedArrayList = new ArrayList<String>();
+	//
+	// @Override
+	// public void run() {
+	// System.out.println("Hello world - begins");
+	// try {
+	// totalCorner();
+	// } catch (IOException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	//
+	// System.out.println(receivedArrayList);
+	//
+	// System.out.println("hello world - ends");
+	//
+	// }
+	//
+	// public void totalCorner() throws IOException {
+	// Document document =
+	// Jsoup.connect("http://www.totalcorner.com/match/today").get();
+	// receivedArrayList = scrapeMatchlist(document, "#inplay_match_table
+	// tbody:last-of-type td");
+	// // loop(matches);
+	// // liveMatch();
+	// }
+	//
+	// private ArrayList<String> scrapeMatchlist(Document document, String
+	// selector) {
+	// Elements elements = document.select(selector);
+	// ArrayList<String> values = new ArrayList<>();
+	//
+	// for (Element element : elements) {
+	// // System.out.println("1");
+	// String str = element.text();
+	// // System.out.println(str);
+	// values.add(str);
+	// }
+	//
+	// // createMatchObjects(values);
+	// return values;
+	// }
+	//
+	// }
+
+//	public void totalCorner() throws IOException {
+//		Document document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
+//
+//		System.err.println("scrapeMatchlist();");
+//		scrapeMatchlist(document, "#inplay_match_table tbody:last-of-type td");
+//		// loop(matches);
+//
+//	}
+//
+//	private ArrayList<String> scrapeMatchlist(Document document, String selector) {
+//		Elements elements = document.select(selector);
+//		ArrayList<String> values = new ArrayList<>();
+//		for (Element element : elements) {
+//			String str = element.text();
+//			values.add(str);
+//
+//		}
+//
+//		System.err.println("createMatchObjects();");
+//		createMatchObjects(values);
+//		return values;
+//	}
+//
+//	public void createMatchObjects(ArrayList<String> values) {
+//		matches.clear();
+//		final int NUM_PARAM = 14;
+//		if (values.size() % NUM_PARAM != 0) {
+//			System.out.println("Expected values to be divisible by 14. They are " + values.size() + " instead");
+//		}
+//
+//		int totMatches = values.size() / NUM_PARAM;
+//		for (int i = 0; i < totMatches; i++) {
+//			String[] params = new String[NUM_PARAM];
+//			for (int j = 0; j < NUM_PARAM; j++) {
+//				params[j] = values.get(i * NUM_PARAM + j);
+//			}
+//			System.out.println("Heloaaaa");
+//			Match match = new Match(params);
+//			System.out.println("testing - match: " + match.toString());
+//			String str = Arrays.toString(params);
+//			System.out.println("testing - params: " + str);
+//
+//			if (!matchDuplicate(match)) {
+//				// System.err.println("matchDuplicate(); check: " +
+//				// matchDuplicate(match) + " Match: " + match);
+//				matches.add(match);
+//
+//				System.err.println("assignProperties();");
+//				assignProperties(match);
+//
+//				System.err.println("setGraphData();" + match);
+//				setGraphData(match);
+//			}
+//
+//		}
+//
+//		System.err.println("createMatchObjects(); finished!");
+//	}
+//
+//	public boolean matchDuplicate(Match match) {
+//		boolean duplicate = false;
+//		// System.out.println("Printing match.getHomeTeam(): " +
+//		// match.getHomeTeam());
+//		// System.out.println("Printing match.getAwayTeam(): " +
+//		// match.getAwayTeam());
+//
+//		System.out.println("matchDuplicate(); printing matchtes: " + matches);
+//		for (Match matchCheck : matches) {
+//			if (match.getHomeTeam() == matchCheck.getHomeTeam() && match.getAwayTeam() == matchCheck.getAwayTeam()) {
+//
+//				// System.out.println("var1 " + match.getHomeTeam());
+//				// System.out.println("var2 " + matchCheck.getHomeTeam());
+//				// System.out.println("var3 " + match.getAwayTeam());
+//				// System.out.println("var3 " + matchCheck.getHomeTeam());
+//
+//				duplicate = true;
+//				// System.out.println("duplicate: " + duplicate);
+//				// System.out.println("matchDuplicate() input: " + match);
+//				// System.out.println("matchCheck: " + matchCheck);
+//
+//				System.err.println("assignProperties();");
+//				assignProperties(match);
+//
+//				System.err.println("setGraphData();");
+//				setGraphData(match);
+//			}
+//		}
+//		System.err.println("matchDuplicate(); finished!");
+//		return duplicate;
+//	}
+
+	public static void assignProperties(Match match) {
+		// System.out.println(match);
+		match.assignProperties(match.getMinuteString(), match.getScore(), match.getMatchHandicap(),
+				match.getTotalGoals(), match.getMatchAttach(), match.getMatchShoot());
+
+		System.err.println("assignProperties(); finished!");
+	}
+	
+	public void initializeScanner(){
+		Scanner keyboard = new Scanner(System.in); 
+		System.out.println("enter an integer");
+		
+		while(keyboard.hasNext()){
+			if(keyboard.nextInt() == 0){
+				System.out.println("HELLO TEAM");
+			}
+		}
+	}
+	
+	public Thread addThread(){
 		Thread t1 = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				Document document = null;
-				try {
-					document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				for (int i = 0; i < 3; i++) {
+					Document document = null;
+					System.err.println("STARTED THREAD EL NUMBERO DEL: " + i);
+					try {
+						document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 
-				System.err.println("scrapeMatchlist();");
-				scrapeMatchlist(document, "#inplay_match_table tbody:last-of-type td");
+					System.err.println("scrapeMatchlist();");
+					scrapeMatchlist(document, "#inplay_match_table tbody:last-of-type td");
+				
+					try{
+						Thread.sleep(3000);
+					} catch(InterruptedException e){
+						e.printStackTrace();
+					}
+				}
+				
+
 			}
 
 			private ArrayList<String> scrapeMatchlist(Document document, String selector) {
@@ -115,183 +304,15 @@ public class MainProgram {
 				return duplicate;
 			}
 
+			
 		});
-
+		return t1; 
 		
-		
-		
-		System.err.println("totalCorner();");
-		program.totalCorner();
-
-		System.err.println("liveMatch();");
-		program.liveMatch();
-		System.err.println("print_live_matches();");
-		program.print_live_matches();
-
-		System.err.println("returnFirstLiveMatch();");
-		program.returnFirstLiveMatch();
-
-		System.err.println("FINISHED!!");
-
-	}
-
-	// static class Receiver extends TimerTask {
-	//
-	// ArrayList<String> receivedArrayList = new ArrayList<String>();
-	//
-	// @Override
-	// public void run() {
-	// System.out.println("Hello world - begins");
-	// try {
-	// totalCorner();
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// System.out.println(receivedArrayList);
-	//
-	// System.out.println("hello world - ends");
-	//
-	// }
-	//
-	// public void totalCorner() throws IOException {
-	// Document document =
-	// Jsoup.connect("http://www.totalcorner.com/match/today").get();
-	// receivedArrayList = scrapeMatchlist(document, "#inplay_match_table
-	// tbody:last-of-type td");
-	// // loop(matches);
-	// // liveMatch();
-	// }
-	//
-	// private ArrayList<String> scrapeMatchlist(Document document, String
-	// selector) {
-	// Elements elements = document.select(selector);
-	// ArrayList<String> values = new ArrayList<>();
-	//
-	// for (Element element : elements) {
-	// // System.out.println("1");
-	// String str = element.text();
-	// // System.out.println(str);
-	// values.add(str);
-	// }
-	//
-	// // createMatchObjects(values);
-	// return values;
-	// }
-	//
-	// }
-
-	public void totalCorner() throws IOException {
-		Document document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
-
-		System.err.println("scrapeMatchlist();");
-		scrapeMatchlist(document, "#inplay_match_table tbody:last-of-type td");
-		// loop(matches);
-
-	}
-
-	private ArrayList<String> scrapeMatchlist(Document document, String selector) {
-		Elements elements = document.select(selector);
-		ArrayList<String> values = new ArrayList<>();
-		for (Element element : elements) {
-			String str = element.text();
-			values.add(str);
-
-		}
-
-		System.err.println("createMatchObjects();");
-		createMatchObjects(values);
-		return values;
-	}
-
-	public void createMatchObjects(ArrayList<String> values) {
-		matches.clear();
-		final int NUM_PARAM = 14;
-		if (values.size() % NUM_PARAM != 0) {
-			System.out.println("Expected values to be divisible by 14. They are " + values.size() + " instead");
-		}
-
-		int totMatches = values.size() / NUM_PARAM;
-		for (int i = 0; i < totMatches; i++) {
-			String[] params = new String[NUM_PARAM];
-			for (int j = 0; j < NUM_PARAM; j++) {
-				params[j] = values.get(i * NUM_PARAM + j);
-			}
-			System.out.println("Heloaaaa");
-			Match match = new Match(params);
-			System.out.println("testing - match: " + match.toString());
-			String str = Arrays.toString(params);
-			System.out.println("testing - params: " + str);
-
-			if (!matchDuplicate(match)) {
-				// System.err.println("matchDuplicate(); check: " +
-				// matchDuplicate(match) + " Match: " + match);
-				matches.add(match);
-
-				System.err.println("assignProperties();");
-				assignProperties(match);
-
-				System.err.println("setGraphData();" + match);
-				setGraphData(match);
-			}
-
-		}
-
-		System.err.println("createMatchObjects(); finished!");
-	}
-
-	public boolean matchDuplicate(Match match) {
-		boolean duplicate = false;
-		// System.out.println("Printing match.getHomeTeam(): " +
-		// match.getHomeTeam());
-		// System.out.println("Printing match.getAwayTeam(): " +
-		// match.getAwayTeam());
-
-		System.out.println("matchDuplicate(); printing matchtes: " + matches);
-		for (Match matchCheck : matches) {
-			if (match.getHomeTeam() == matchCheck.getHomeTeam() && match.getAwayTeam() == matchCheck.getAwayTeam()) {
-
-				// System.out.println("var1 " + match.getHomeTeam());
-				// System.out.println("var2 " + matchCheck.getHomeTeam());
-				// System.out.println("var3 " + match.getAwayTeam());
-				// System.out.println("var3 " + matchCheck.getHomeTeam());
-
-				duplicate = true;
-				// System.out.println("duplicate: " + duplicate);
-				// System.out.println("matchDuplicate() input: " + match);
-				// System.out.println("matchCheck: " + matchCheck);
-
-				System.err.println("assignProperties();");
-				assignProperties(match);
-
-				System.err.println("setGraphData();");
-				setGraphData(match);
-			}
-		}
-		System.err.println("matchDuplicate(); finished!");
-		return duplicate;
-	}
-
-	public static void assignProperties(Match match) {
-		// System.out.println(match);
-		match.assignProperties(match.getMinuteString(), match.getScore(), match.getMatchHandicap(),
-				match.getTotalGoals(), match.getMatchAttach(), match.getMatchShoot());
-
-		System.err.println("assignProperties(); finished!");
 	}
 
 	public static void setGraphData(Match match) {
 
-		// System.out.println("Skriver ut all skit");
-		// System.out.println("minutes: " + match.getMinutes());
-		// System.out.println("home_score" + match.getHomeScore());
-		// System.out.println("home_attach" + match.getHomeAttach());
-		// System.out.println("home_shots" + match.getHomeShots());
-		//
-		// System.out.println("away_score" + match.getAwayScore());
-		// System.out.println("away_attach" + match.getAwayAttach());
-		// System.out.println("away_shots" + match.getAwayShots());
+
 		match.setGraphData(match.getMinutes(), match.getHomeScore(), match.getAwayScore(), match.getHomeAttach(),
 				match.getAwayAttach(), match.getHomeShots(), match.getAwayShots());
 
@@ -307,7 +328,6 @@ public class MainProgram {
 			if (m.getMinutes() > -1) {
 
 				live_matches.add(m);
-				// System.out.println(m + " " + m.getMinutes());
 			}
 		}
 
