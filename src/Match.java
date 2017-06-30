@@ -114,49 +114,66 @@ public class Match {
 		String[] goals = score.split(" - ");
 		home_score = Integer.parseInt(goals[0]);
 		away_score = Integer.parseInt(goals[1]);
+		
 		System.out.println("home_score: " + home_score);
 		System.out.println("away_score: " + away_score);
-		
-		System.out.println("testing match_handicap: " + match_handicap);
+//		
+//		System.out.println("testing match_handicap: " + match_handicap);
 		String[] handicaps = match_handicap.split(" ");
 		
-//		if(!match_handicap.isEmpty()){
-//			current_handicap = Double.parseDouble(handicaps[0]);
-//			
-//			if(handicaps.length > 1){
-//				onbefore_handicap = Double.parseDouble(handicaps[1].replaceAll("[^\\d.]", ""));
-//			}
-//			
-//		}
+		if(!match_handicap.isEmpty()){
+			current_handicap = Double.parseDouble(handicaps[0]);
+			
+			if(handicaps.length > 1){
+				onbefore_handicap = Double.parseDouble(handicaps[1].replaceAll("[^\\d.]", ""));
+			}
+			
+		}
 
-//		String[] goal_lines = total_goals.split(" ");
-//		
-//		
-//		if(!total_goals.isEmpty()){
-//			current_goal_line = Double.parseDouble(goal_lines[0]);
-//			
-//			if(goal_lines.length > 1){
-//				onbefore_goal_line = Double.parseDouble(goal_lines[1].replaceAll("[^\\d.]", ""));
-//			}
-//			
-//			 if (goal_lines.length == 4) {
-//			 current_goal_line_half = Double.parseDouble(goal_lines[2]);
-//			 onbefore_goal_line_half = Double.parseDouble(goal_lines[3].replaceAll("[^\\d.]", ""));
-//			 }
-//		}
+		String[] goal_lines = total_goals.split(" ");
+		
+		
+		if(!total_goals.isEmpty()){
+			current_goal_line = Double.parseDouble(goal_lines[0]);
+			
+			if(goal_lines.length > 1){
+				onbefore_goal_line = Double.parseDouble(goal_lines[1].replaceAll("[^\\d.]", ""));
+			}
+			
+			 if (goal_lines.length == 4) {
+			 current_goal_line_half = Double.parseDouble(goal_lines[2]);
+			 onbefore_goal_line_half = Double.parseDouble(goal_lines[3].replaceAll("[^\\d.]", ""));
+			 }
+		}
 
 
 //		 SKA KOMMENTERAS UPP NÄR DE ÄR MATCHER LIVE, KNASAR ANNARS 
-		 
-//		 System.out.println("Match-attach !!! - " + match_attach);
-//		String[] attachs = match_attach.split(" - "); 
-//		home_attach = Integer.parseInt(attachs[0]); 
-//		away_attach = Integer.parseInt(attachs[1]); 
-//		
-//		String[] shoots = match_shoot.split(" - "); 
-//		home_shoot = Integer.parseInt(shoots[0]); 
-//		away_shoot = Integer.parseInt(shoots[1]); 
-//		
+		
+		
+		try{
+			 System.out.println("Match-attach !!! - " + match_attach);
+				String[] attachs = match_attach.split(" - "); 
+				home_attach = Integer.parseInt(attachs[0]); 
+				away_attach = Integer.parseInt(attachs[1]); 
+		}
+		catch (final NumberFormatException ex){
+			home_attach = 0; 
+			away_attach = 0; 
+		}
+		
+		try{
+			 System.out.println("Match-shoot !!! - " + match_shoot);
+				String[] shoots = match_shoot.split(" - "); 
+				home_shoot = Integer.parseInt(shoots[0]); 
+				away_shoot = Integer.parseInt(shoots[1]); 
+		}
+		catch (final NumberFormatException ex){
+			home_attach = 0; 
+			away_attach = 0; 
+		}
+
+
+		
 		
 	}
 	
@@ -233,13 +250,13 @@ public class Match {
 //		System.out.println(this.graph_data[SCORE_HOME][minute]);
 //		System.out.println(this.graph_data[SCORE_AWAY][minute]);
 		
-		System.out.println("A1: " + minute);
-		System.out.println("A2: " + home_score);
-		System.out.println("A3: " + away_score);
-		System.out.println("A4: " + home_attach);
-		System.out.println("A5: " + away_attach);
-		System.out.println("A6: " + home_shots);
-		System.out.println("A7: " + away_shots);
+//		System.out.println("A1: " + minute);
+//		System.out.println("A2: " + home_score);
+//		System.out.println("A3: " + away_score);
+//		System.out.println("A4: " + home_attach);
+//		System.out.println("A5: " + away_attach);
+//		System.out.println("A6: " + home_shots);
+//		System.out.println("A7: " + away_shots);
 		
 
 		if (this.graph_data[SCORE_HOME][minute] < home_score) {
@@ -262,26 +279,38 @@ public class Match {
 		}
 
 		
-		System.out.println("TESTETETETET");
-		System.out.println(this.graph_data[SCORE_HOME][minute]);
-		System.out.println(this.graph_data[SCORE_AWAY][minute]);
+//		System.out.println("TESTETETETET");
+//		System.out.println(this.graph_data[SCORE_HOME][minute]);
+//		System.out.println(this.graph_data[SCORE_AWAY][minute]);
 
+	}
+	
+	public void printGraphData(){
+		for(int i = 0; i < 6; i++){
+			System.out.print(i + " ");
+			for(int j = 0; j < 120; j++){
+				System.out.print(graph_data[i][j]); // println skriver ut alla index för sig så man kan se rätt tilldelning. 
+			}
+			System.out.println("SPLITTER");
+		}
 	}
 
 	public void printData(int minute) {
+		
+		
 //		System.out.println(this.graph_data[SCORE_HOME][minute -2]);
 //		System.out.println(this.graph_data[SCORE_HOME][minute -1]);
-		System.out.println(this.graph_data[SCORE_HOME][minute]);
-		System.out.println(this.graph_data[SCORE_HOME][minute +1]);
-		System.out.println(this.graph_data[SCORE_HOME][minute +2]);
-
-		System.out.println("HEHEHE");
-
-//		System.out.println(this.graph_data[SCORE_AWAY][minute -2]);
-//		System.out.println(this.graph_data[SCORE_AWAY][minute -1]);
-		System.out.println(this.graph_data[SCORE_AWAY][minute]);
-		System.out.println(this.graph_data[SCORE_AWAY][minute +1]);
-		System.out.println(this.graph_data[SCORE_AWAY][minute +2]);
+//		System.out.println(this.graph_data[SCORE_HOME][minute]);
+//		System.out.println(this.graph_data[SCORE_HOME][minute +1]);
+//		System.out.println(this.graph_data[SCORE_HOME][minute +2]);
+//
+//		System.out.println("HEHEHE");
+//
+////		System.out.println(this.graph_data[SCORE_AWAY][minute -2]);
+////		System.out.println(this.graph_data[SCORE_AWAY][minute -1]);
+//		System.out.println(this.graph_data[SCORE_AWAY][minute]);
+//		System.out.println(this.graph_data[SCORE_AWAY][minute +1]);
+//		System.out.println(this.graph_data[SCORE_AWAY][minute +2]);
 
 	}
 
@@ -292,5 +321,6 @@ public class Match {
 				+ " --- " + total_goals + " --- " + match_attach + " --- " + match_shoot + " --- " + live_events
 				+ " --- " + COL;
 	}
-
+	
+	
 }
