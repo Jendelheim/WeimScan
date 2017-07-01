@@ -99,6 +99,20 @@ public class Match {
 		}
 
 	}
+	
+	@Override
+	public boolean equals(Object other){
+	    if (other == null) return false;
+	    if (other == this) return true;
+	    
+	    if (!(other instanceof Match))return false;
+	    Match otherMatch = (Match)other;
+	   
+	    if(this.getHomeTeam().equals(otherMatch.getHomeTeam())){
+	    	return true; 
+	    }
+	    else return false; 
+	}
 
 	// Är det rimligt att göra en metod som denna för att inte behöva assigna
 	// alla värden i onödan utan endast dem man testar?
@@ -115,8 +129,8 @@ public class Match {
 		home_score = Integer.parseInt(goals[0]);
 		away_score = Integer.parseInt(goals[1]);
 		
-		System.out.println("home_score: " + home_score);
-		System.out.println("away_score: " + away_score);
+//		System.out.println("home_score: " + home_score);
+//		System.out.println("away_score: " + away_score);
 //		
 //		System.out.println("testing match_handicap: " + match_handicap);
 		String[] handicaps = match_handicap.split(" ");
@@ -151,7 +165,7 @@ public class Match {
 		
 		
 		try{
-			 System.out.println("Match-attach !!! - " + match_attach);
+//			 System.out.println("Match-attach !!! - " + match_attach);
 				String[] attachs = match_attach.split(" - "); 
 				home_attach = Integer.parseInt(attachs[0]); 
 				away_attach = Integer.parseInt(attachs[1]); 
@@ -162,7 +176,7 @@ public class Match {
 		}
 		
 		try{
-			 System.out.println("Match-shoot !!! - " + match_shoot);
+//			 System.out.println("Match-shoot !!! - " + match_shoot);
 				String[] shoots = match_shoot.split(" - "); 
 				home_shoot = Integer.parseInt(shoots[0]); 
 				away_shoot = Integer.parseInt(shoots[1]); 
@@ -286,13 +300,15 @@ public class Match {
 	}
 	
 	public void printGraphData(){
+		System.out.println("printGraphData-start at minute: " + minutes  + " "+ this.toString());
 		for(int i = 0; i < 6; i++){
 			System.out.print(i + " ");
 			for(int j = 0; j < 120; j++){
 				System.out.print(graph_data[i][j]); // println skriver ut alla index för sig så man kan se rätt tilldelning. 
 			}
-			System.out.println("SPLITTER");
 		}
+
+		System.out.println("printGraphData-end");
 	}
 
 	public void printData(int minute) {
