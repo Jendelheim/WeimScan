@@ -9,7 +9,8 @@ public class LogicController {
 	}
 
 	public int whichQuarter(int min) {
-		Logger.err("Unreasonable minute: " + min);
+		if (min < 0)
+			Logger.err("Unreasonable minute: " + min);
 		// This can be expressed as 1 + Integer.floor(90/15)
 		// but it is great for testing it.
 		if (min > 0 && min < 16) {
