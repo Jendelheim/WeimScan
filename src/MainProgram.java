@@ -1,10 +1,7 @@
 import java.io.IOException;
-
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Scanner;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,15 +21,13 @@ public class MainProgram {
 	static MainProgram program = new MainProgram();
 	private LogicController logic = new LogicController();
 	static ArrayList<Match> matches = new ArrayList<>();
-	
-	
-	
+
 	// number of threads
 	public static final int THREADS = Runtime.getRuntime().availableProcessors();
 
 	public static void main(String[] args) throws IOException {
+		Logger.info("Threads: " + THREADS);
 
-		System.err.println("Threads: " + THREADS);
 		// Timer timer = new Timer();
 		// timer.schedule(new Receiver(), 0, 6000);
 
@@ -50,7 +45,7 @@ public class MainProgram {
 		// System.err.println("returnFirstLiveMatch();");
 		// program.returnFirstLiveMatch();
 
-		System.err.println("FINISHED!!");
+		Logger.info("FINISHED!!");
 
 	}
 
@@ -59,12 +54,12 @@ public class MainProgram {
 		storedMatch.assignProperties(match.getMinuteString(), match.getScore(), match.getMatchHandicap(),
 				match.getTotalGoals(), match.getMatchAttach(), match.getMatchShoot());
 
-		System.err.println("assignProperties(); finished!");
+		Logger.fine("assignProperties(); finished!");
 	}
 
 	public void initializeScanner() {
 		Scanner keyboard = new Scanner(System.in);
-		System.out.println("enter an integer");
+		Logger.info("enter an integer");
 
 		int input = keyboard.nextInt();
 
@@ -72,45 +67,54 @@ public class MainProgram {
 
 		// Start parsing
 		case 1:
+			Logger.finest("1: parsing");
 			addThread().start();
 			initializeScanner();
 			break;
 
 		// Print graphData for each live game
 		case 2:
+			Logger.finest("2: Print graphData");
 			for (Match m : liveMatch()) {
 				m.printGraphData();
 			}
 			initializeScanner();
 			break;
 
-		case 3:
-
+//		case 3:
+// ??
+//			break;
+		default:
+			// TODO handle this case
+			// TODO Got to close the keyboard too before exiting.
+			keyboard.close();
 			break;
 		}
 	}
 
 	public Thread addThread() {
-		
+
 		Thread t1 = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				for (int i = 0; i < 1; i++) {
 					Document document = null;
-					System.err.println("STARTED THREAD EL NUMBERO DEL: " + i);
+					Logger.fine("STARTED THREAD EL NUMBERO DEL: " + i);
 					try {
 						document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
 					} catch (IOException e) {
+						Logger.info("Connection Error in jsoup module");
 						e.printStackTrace();
 					}
 
-					System.err.println("scrapeMatchlist();");
+					Logger.info("scrapeMatchlist();");
 					scrapeMatchlist(document, "#inplay_match_table tbody:last-of-type td");
 
 					try {
 						Thread.sleep(3000);
 					} catch (InterruptedException e) {
+						Logger.err("Thread sleep error");
 						e.printStackTrace();
 					}
 				}
@@ -126,18 +130,17 @@ public class MainProgram {
 
 				}
 
-				System.err.println("createMatchObjects();");
+				Logger.fine("createMatchObjects();");
 				createMatchObjects(values);
-		
-				
+
 				return values;
 			}
 
 			public void createMatchObjects(ArrayList<String> values) {
-				
+
 				final int NUM_PARAM = 14;
 				if (values.size() % NUM_PARAM != 0) {
-					System.out.println("Expected values to be divisible by 14. They are " + values.size() + " instead");
+					Logger.err("Expected values to be divisible by 14. They are " + values.size() + " instead");
 				}
 
 				int totMatches = values.size() / NUM_PARAM;
@@ -146,47 +149,49 @@ public class MainProgram {
 					for (int j = 0; j < NUM_PARAM; j++) {
 						params[j] = values.get(i * NUM_PARAM + j);
 					}
-					System.out.println("Heloaaaa");
+					Logger.finest("Heloaaaa");
 					Match match = new Match(params);
-					System.out.println("testing - match: " + match.toString());
+					Logger.finest("testing - match: " + match.toString());
 					String str = Arrays.toString(params);
-					System.out.println("testing - params: " + str);
+					Logger.finest("testing - params: " + str);
 
 					if (!matchDuplicate(match)) {
 						matches.add(match);
 
-
 					}
-					
-					System.err.println("assignProperties();");
+
+					Logger.fine("assignProperties();");
 					assignProperties(match, match);
 
-					System.err.println("setGraphData();" + match);
+					Logger.fine("setGraphData();" + match);
 					setGraphData(match, match);
 
 				}
 
-				System.err.println("createMatchObjects(); finished!");
+				Logger.err("createMatchObjects(); finished!");
 			}
 
 			public boolean matchDuplicate(Match match) {
 				boolean duplicate = false;
 
-				System.out.println("matchDuplicate(); printing matchtes: " + matches);
+				Logger.info("matchDuplicate(); printing matchtes: " + matches);
 				for (Match matchCheck : matches) {
 					if (match.equals(matchCheck)) {
-						System.err.println("TRUE");
+						Logger.finest("TRUE");
 						duplicate = true;
 
-						System.err.println("assignProperties();" + "INNE I LOOPFAN");
+						Logger.finest("assignProperties();" + "INNE I LOOPFAN");
 						assignProperties(matchCheck, match);
 
-						System.err.println("setGraphData();");
+						Logger.info("setGraphData();");
 						setGraphData(matchCheck, match);
 					}
-					//else 	System.err.println("FALSE" + " " + match.getHomeTeam() + " " + matchCheck.getHomeTeam() + " /// " + match.getAwayTeam() + " " + matchCheck.getAwayTeam() );
+					// else System.err.println("FALSE" + " " +
+					// match.getHomeTeam() + " " + matchCheck.getHomeTeam() + "
+					// /// " + match.getAwayTeam() + " " +
+					// matchCheck.getAwayTeam() );
 				}
-				System.err.println("matchDuplicate(); finished!" + duplicate);
+				Logger.info("matchDuplicate(); finished!" + duplicate);
 				return duplicate;
 			}
 
@@ -200,22 +205,23 @@ public class MainProgram {
 		storedMatch.setGraphData(match.getMinutes(), match.getHomeScore(), match.getAwayScore(), match.getHomeAttach(),
 				match.getAwayAttach(), match.getHomeShots(), match.getAwayShots());
 
-		System.err.println("setGraphData(); finished!");
+		Logger.err("setGraphData(); finished!");
 	}
 
 	public ArrayList<Match> liveMatch() {
 
 		ArrayList<Match> live_matches = new ArrayList<>();
 
-		System.out.println("liveMatch(); started");
+		Logger.info("liveMatch(); started");
 		for (Match m : matches) {
 			if (m.getMinutes() > -1) {
-
 				live_matches.add(m);
+			} else {
+				Logger.err("Match has negative minutes!");
 			}
 		}
 
-		System.err.println("liveMatch(); finished!");
+		Logger.info("liveMatch(); finished!");
 		return live_matches;
 	}
 
@@ -224,61 +230,61 @@ public class MainProgram {
 		match = liveMatch().get(0);
 		printMessage("returnFirstLiveMatch(): " + match, null);
 
-		System.err.println("Testing graphPrint");
+		Logger.err("Testing graphPrint");
 		match.printGraphData();
 		return match;
 	}
 
-	// Kan ändras till return_live_matches() sen då man ska hämta dom till
+	// Kan ï¿½ndras till return_live_matches() sen dï¿½ man ska hï¿½mta dom till
 	// hemsidan
 	public void print_live_matches() {
 		ArrayList<Match> liveMatches = liveMatch();
 
 		for (Match m : liveMatches) {
 
-			System.out.println(m);
+			Logger.info(m.toString());
 			assignProperties(m, m);
 			setGraphData(m, m);
 
-			// System.out.println("home_score" + m.getHomeScore());
-			// System.out.println("home_attach" + m.getHomeAttach());
-			// System.out.println("home_shots" + m.getHomeShots());
-			//
-			// System.out.println("away_score" + m.getAwayScore());
-			// System.out.println("away_attach" + m.getAwayAttach());
-			// System.out.println("away_shots" + m.getAwayShots());
+			Logger.finest("home_score" + m.getHomeScore());
+			Logger.finest("home_attach" + m.getHomeAttach());
+			Logger.finest("home_shots" + m.getHomeShots());
 
-			System.err.println("calculateInconsistencies();");
+			Logger.finest("away_score" + m.getAwayScore());
+			Logger.finest("away_attach" + m.getAwayAttach());
+			Logger.finest("away_shots" + m.getAwayShots());
+
+			Logger.err("calculateInconsistencies();");
 			calculateInconsistencies(m);
 
-			System.err.println("print_live_matches(); finished!");
+			Logger.info("print_live_matches(); finished!");
 		}
 	}
 
 	public void loop(ArrayList<Match> matches) {
 		for (Match match : matches) {
 			System.out.println(match);
-			System.out.println("done");
-
+			Logger.finest("match done");
 		}
+		Logger.info("matches loop done");
 	}
 
 	public void calculateInconsistencies(Match match) {
 		printMessage("testing calc.match: " + match, null);
 		printMessage("hello my name is ", match.getAwayTeam());
-		System.out.println(match.getHomeTeam() + " vs " + match.getAwayTeam());
+		Logger.info(match.getHomeTeam() + " vs " + match.getAwayTeam());
 		logic.inconsistency(match.getHomeScore(), match.getAwayScore());
 		logic.inconsistency(match.getHomeAttach(), match.getAwayAttach());
 		logic.inconsistency(match.getHomeShots(), match.getAwayShots());
-		System.out.println("testing graphData: ");
+		Logger.info("testing graphData: ");
 		match.printData(match.getMinutes());
 
-		System.err.println("calculateInconsistencies(); finished!");
+		Logger.info("calculateInconsistencies(); finished!");
 
 	}
 
 	public <T> void printMessage(String message, T value) {
-		System.out.println(message + value);
+		Logger.info(message + value);
 	}
 
 }
