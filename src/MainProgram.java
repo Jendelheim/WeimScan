@@ -22,6 +22,11 @@ public class MainProgram {
 	private LogicController logic = new LogicController();
 	static ArrayList<Match> matches = new ArrayList<>();
 
+	/* Used to prevent excessive requests */
+	long documentTimestamp = System.currentTimeMillis();
+	Document savedDocument = null;
+	private static final long REQUEST_GRACE_TIME = 1000 * 60 * 3; // 10 min
+
 	// number of threads
 	public static final int THREADS = Runtime.getRuntime().availableProcessors();
 
@@ -81,9 +86,9 @@ public class MainProgram {
 			initializeScanner();
 			break;
 
-//		case 3:
-// ??
-//			break;
+		// case 3:
+		// ??
+		// break;
 		default:
 			// TODO handle this case
 			// TODO Got to close the keyboard too before exiting.
@@ -99,14 +104,8 @@ public class MainProgram {
 			@Override
 			public void run() {
 				for (int i = 0; i < 1; i++) {
-					Document document = null;
+					Document document = program.getDocument();
 					Logger.fine("STARTED THREAD EL NUMBERO DEL: " + i);
-					try {
-						document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
-					} catch (IOException e) {
-						Logger.info("Connection Error in jsoup module");
-						e.printStackTrace();
-					}
 
 					Logger.info("scrapeMatchlist();");
 					scrapeMatchlist(document, "#inplay_match_table tbody:last-of-type td");
@@ -198,6 +197,28 @@ public class MainProgram {
 		});
 		return t1;
 
+	}
+
+	protected Document getDocument() {
+		Document document = null;
+		long timeNow = System.currentTimeMillis();
+		
+		// request for the first time and after grace delay
+		if (savedDocument != null && (REQUEST_GRACE_TIME > (timeNow - documentTimestamp))) {
+			Logger.finest("Graced document returned");
+			return savedDocument;
+		} else {
+			try {
+				Logger.finest("Requesting document");
+				document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
+				savedDocument = document;
+				documentTimestamp = System.currentTimeMillis();
+			} catch (IOException e) {
+				Logger.info("Connection Error in jsoup module");
+				e.printStackTrace();
+			}
+		}
+		return document;
 	}
 
 	public static void setGraphData(Match storedMatch, Match match) {

@@ -6,7 +6,7 @@
  */
 public class Logger {
 
-	public static Level LEVEL = Level.INFO;
+	public static Level LEVEL = Level.FINEST;
 
 	public enum Level {
 		INFO, FINE, FINEST
@@ -29,7 +29,7 @@ public class Logger {
 		case FINEST:
 			return true;
 		default:
-			System.err.println("Debug.java: Illegal debug level. Exiting...");
+			System.err.println("Logger.java: Illegal debug level. Exiting...");
 			System.exit(1);
 		}
 		return false;
