@@ -21,6 +21,7 @@ public class MainProgram {
 	static MainProgram program = new MainProgram();
 	private LogicController logic = new LogicController();
 	static ArrayList<Match> matches = new ArrayList<>();
+	private Thread currentThread; 
 
 	/* Used to prevent excessive requests */
 	long documentTimestamp = System.currentTimeMillis();
@@ -73,7 +74,9 @@ public class MainProgram {
 		// Start parsing
 		case 1:
 			Logger.finest("1: parsing");
-			addThread().start();
+			currentThread = addThread();
+			currentThread.start();
+			currentThread.interrupt();
 			initializeScanner();
 			break;
 
@@ -117,7 +120,7 @@ public class MainProgram {
 						e.printStackTrace();
 					}
 				}
-
+				
 			}
 
 			private ArrayList<String> scrapeMatchlist(Document document, String selector) {
@@ -195,6 +198,7 @@ public class MainProgram {
 			}
 
 		});
+		
 		return t1;
 
 	}
