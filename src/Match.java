@@ -2,7 +2,7 @@ import org.omg.Messaging.SyncScopeHelper;
 
 public class Match {
 
-	// Tilldela alla värden (kanske endast de som kan vara null i senare skede
+	// Tilldela alla vï¿½rden (kanske endast de som kan vara null i senare skede
 	// till -1
 	String league; // Param 1
 	String startTime; // Param 2
@@ -11,10 +11,10 @@ public class Match {
 	int minutes;
 	boolean started;
 
-	// Hur parsear man så man kontrollerar om det är ett gult eller rött kort i
-	// strängen?
+	// Hur parsear man sï¿½ man kontrollerar om det ï¿½r ett gult eller rï¿½tt kort i
+	// strï¿½ngen?
 	String match_home; // Param 4
-//	String hometeam;
+	// String hometeam;
 	int yellow_card_home;
 	int red_card_home;
 
@@ -23,7 +23,7 @@ public class Match {
 	int away_score;
 
 	String match_away; // Param 6
-//	String awayteam;
+	// String awayteam;
 	int yellow_card_away;
 	int red_card_away;
 
@@ -99,27 +99,32 @@ public class Match {
 		}
 
 	}
-	
+
 	@Override
-	public boolean equals(Object other){
-	    if (other == null) return false;
-	    if (other == this) return true;
-	    
-	    if (!(other instanceof Match))return false;
-	    Match otherMatch = (Match)other;
-	   
-	    if(this.getHomeTeam().equals(otherMatch.getHomeTeam())){
-	    	return true; 
-	    }
-	    else return false; 
+	public boolean equals(Object other) {
+		if (other == null)
+			return false;
+		if (other == this)
+			return true;
+
+		if (!(other instanceof Match))
+			return false;
+		Match otherMatch = (Match) other;
+
+		if (this.getHomeTeam().equals(otherMatch.getHomeTeam())) {
+			return true;
+		} else
+			return false;
 	}
 
-	// Är det rimligt att göra en metod som denna för att inte behöva assigna
-	// alla värden i onödan utan endast dem man testar?
-	
-	//Måste kunna uppdatera samma objekt utan att skapa ett nytt, passa med värden i assignProp så man kan ändra om. 
-	
-	public void assignProperties(String match_status_minutes, String score, String match_handicap, String total_goals, String match_attach, String match_shoot){ 
+	// ï¿½r det rimligt att gï¿½ra en metod som denna fï¿½r att inte behï¿½va assigna
+	// alla vï¿½rden i onï¿½dan utan endast dem man testar?
+
+	// Mï¿½ste kunna uppdatera samma objekt utan att skapa ett nytt, passa med
+	// vï¿½rden i assignProp sï¿½ man kan ï¿½ndra om.
+
+	public void assignProperties(String match_status_minutes, String score, String match_handicap, String total_goals,
+			String match_attach, String match_shoot) {
 
 		if (match_status_minutes.matches("\\d+")) {
 			minutes = Integer.parseInt(match_status_minutes);
@@ -128,150 +133,134 @@ public class Match {
 		String[] goals = score.split(" - ");
 		home_score = Integer.parseInt(goals[0]);
 		away_score = Integer.parseInt(goals[1]);
-		
-//		System.out.println("home_score: " + home_score);
-//		System.out.println("away_score: " + away_score);
-//		
-//		System.out.println("testing match_handicap: " + match_handicap);
+
+		// Logger.finest("home_score: " + home_score);
+		// Logger.finest("away_score: " + away_score);
+		//
+		// Logger.finest("testing match_handicap: " + match_handicap);
 		String[] handicaps = match_handicap.split(" ");
-		
-		if(!match_handicap.isEmpty()){
+
+		if (!match_handicap.isEmpty()) {
 			current_handicap = Double.parseDouble(handicaps[0]);
-			
-			if(handicaps.length > 1){
+
+			if (handicaps.length > 1) {
 				onbefore_handicap = Double.parseDouble(handicaps[1].replaceAll("[^\\d.]", ""));
 			}
-			
+
 		}
 
 		String[] goal_lines = total_goals.split(" ");
-		
-		
-		if(!total_goals.isEmpty()){
+
+		if (!total_goals.isEmpty()) {
 			current_goal_line = Double.parseDouble(goal_lines[0]);
-			
-			if(goal_lines.length > 1){
+
+			if (goal_lines.length > 1) {
 				onbefore_goal_line = Double.parseDouble(goal_lines[1].replaceAll("[^\\d.]", ""));
 			}
-			
-			 if (goal_lines.length == 4) {
-			 current_goal_line_half = Double.parseDouble(goal_lines[2]);
-			 onbefore_goal_line_half = Double.parseDouble(goal_lines[3].replaceAll("[^\\d.]", ""));
-			 }
+
+			if (goal_lines.length == 4) {
+				current_goal_line_half = Double.parseDouble(goal_lines[2]);
+				onbefore_goal_line_half = Double.parseDouble(goal_lines[3].replaceAll("[^\\d.]", ""));
+			}
 		}
 
+		// SKA KOMMENTERAS UPP Nï¿½R DE ï¿½R MATCHER LIVE, KNASAR ANNARS
 
-//		 SKA KOMMENTERAS UPP NÄR DE ÄR MATCHER LIVE, KNASAR ANNARS 
-		
-		
-		try{
-//			 System.out.println("Match-attach !!! - " + match_attach);
-				String[] attachs = match_attach.split(" - "); 
-				home_attach = Integer.parseInt(attachs[0]); 
-				away_attach = Integer.parseInt(attachs[1]); 
-		}
-		catch (final NumberFormatException ex){
-			home_attach = 0; 
-			away_attach = 0; 
-		}
-		
-		try{
-//			 System.out.println("Match-shoot !!! - " + match_shoot);
-				String[] shoots = match_shoot.split(" - "); 
-				home_shoot = Integer.parseInt(shoots[0]); 
-				away_shoot = Integer.parseInt(shoots[1]); 
-		}
-		catch (final NumberFormatException ex){
-			home_attach = 0; 
-			away_attach = 0; 
+		try {
+			// Logger.info("Match-attach !!! - " + match_attach);
+			String[] attachs = match_attach.split(" - ");
+			home_attach = Integer.parseInt(attachs[0]);
+			away_attach = Integer.parseInt(attachs[1]);
+		} catch (final NumberFormatException ex) {
+			home_attach = 0;
+			away_attach = 0;
 		}
 
+		try {
+			// Logger.info("Match-shoot !!! - " + match_shoot);
+			String[] shoots = match_shoot.split(" - ");
+			home_shoot = Integer.parseInt(shoots[0]);
+			away_shoot = Integer.parseInt(shoots[1]);
+		} catch (final NumberFormatException ex) {
+			home_attach = 0;
+			away_attach = 0;
+		}
 
-		
-		
 	}
-	
-	
-	
 
 	public int getMinutes() {
 		return minutes;
 	}
-	
-	public int getHomeScore(){
-		return home_score; 
-	}
-	
-	public int getAwayScore(){
-		return away_score; 
-	}
-	
-	public int getHomeAttach(){
-		return home_attach; 
-	}
-	
-	public int getAwayAttach(){
-		return away_attach; 
-	}
-	
-	public int getHomeShots(){
-		return home_shoot; 
-	}
-	
-	public int getAwayShots(){
-		return away_shoot; 
-	}
-	
 
-	
-	public String getHomeTeam(){
-		return match_home; 
+	public int getHomeScore() {
+		return home_score;
 	}
-	
-	public String getAwayTeam(){
+
+	public int getAwayScore() {
+		return away_score;
+	}
+
+	public int getHomeAttach() {
+		return home_attach;
+	}
+
+	public int getAwayAttach() {
+		return away_attach;
+	}
+
+	public int getHomeShots() {
+		return home_shoot;
+	}
+
+	public int getAwayShots() {
+		return away_shoot;
+	}
+
+	public String getHomeTeam() {
+		return match_home;
+	}
+
+	public String getAwayTeam() {
 		return match_away;
 	}
-	
-	public String getScore(){
-		return score; 
-	}
-	
-	public String getMinuteString(){
-		return match_status_minutes; 
-	}
-	
-	public String getMatchHandicap(){
-		return match_handicap; 
-	}
-	
-	public String getTotalGoals(){
-		return total_goals; 
-	}
-	
-	public String getMatchAttach(){
-		return match_attach; 
-	}
-	
-	public String getMatchShoot(){
-		return match_shoot; 
-	}
-	
-	
-	
 
-	public void setGraphData(int minute, int home_score, int away_score, int home_attach, int away_attach, int home_shots, int away_shots) {
+	public String getScore() {
+		return score;
+	}
 
-//		System.out.println(this.graph_data[SCORE_HOME][minute]);
-//		System.out.println(this.graph_data[SCORE_AWAY][minute]);
-		
-//		System.out.println("A1: " + minute);
-//		System.out.println("A2: " + home_score);
-//		System.out.println("A3: " + away_score);
-//		System.out.println("A4: " + home_attach);
-//		System.out.println("A5: " + away_attach);
-//		System.out.println("A6: " + home_shots);
-//		System.out.println("A7: " + away_shots);
-		
+	public String getMinuteString() {
+		return match_status_minutes;
+	}
+
+	public String getMatchHandicap() {
+		return match_handicap;
+	}
+
+	public String getTotalGoals() {
+		return total_goals;
+	}
+
+	public String getMatchAttach() {
+		return match_attach;
+	}
+
+	public String getMatchShoot() {
+		return match_shoot;
+	}
+
+	public void setGraphData(int minute, int home_score, int away_score, int home_attach, int away_attach,
+			int home_shots, int away_shots) {
+
+		// Logger.finest(this.graph_data[SCORE_HOME][minute]);
+		// Logger.finest(this.graph_data[SCORE_AWAY][minute]);
+
+		// Logger.finest("A1: " + minute);
+		// Logger.finest("A2: " + home_score);
+		// Logger.finest("A3: " + away_score);
+		// Logger.finest("A4: " + home_attach);
+		// Logger.finest("A5: " + away_attach);
+		// Logger.finest("A6: " + home_shots);
+		// Logger.finest("A7: " + away_shots);
 
 		if (this.graph_data[SCORE_HOME][minute] < home_score) {
 			this.graph_data[SCORE_HOME][minute] = home_score;
@@ -292,51 +281,50 @@ public class Match {
 			this.graph_data[SHOTS_AWAY][minute] = away_shots;
 		}
 
-		
-//		System.out.println("TESTETETETET");
-//		System.out.println(this.graph_data[SCORE_HOME][minute]);
-//		System.out.println(this.graph_data[SCORE_AWAY][minute]);
+		// Logger.finest("TESTETETETET");
+		// Logger.finest(this.graph_data[SCORE_HOME][minute]);
+		// Logger.finest(this.graph_data[SCORE_AWAY][minute]);
 
 	}
-	
-	public void printGraphData(){
-		System.out.println("printGraphData-start at minute: " + minutes  + " "+ this.toString());
-		for(int i = 0; i < 6; i++){
-			System.out.print(i + " ");
-			for(int j = 0; j < 120; j++){
-				System.out.print(graph_data[i][j]); // println skriver ut alla index för sig så man kan se rätt tilldelning. 
+
+	public void printGraphData() {
+		Logger.info("printGraphData-start at minute: " + minutes + " " + this.toString());
+		for (int i = 0; i < 6; i++) {
+			Logger.finest(i + " ");
+			for (int j = 0; j < 120; j++) {
+				System.out.println(graph_data[i][j]); // println skriver ut alla
+														// index fï¿½r sig sï¿½ man
+														// kan se rï¿½tt
+														// tilldelning.
 			}
 		}
 
-		System.out.println("printGraphData-end");
+		Logger.info("printGraphData-end");
 	}
 
 	public void printData(int minute) {
-		
-		
-//		System.out.println(this.graph_data[SCORE_HOME][minute -2]);
-//		System.out.println(this.graph_data[SCORE_HOME][minute -1]);
-//		System.out.println(this.graph_data[SCORE_HOME][minute]);
-//		System.out.println(this.graph_data[SCORE_HOME][minute +1]);
-//		System.out.println(this.graph_data[SCORE_HOME][minute +2]);
-//
-//		System.out.println("HEHEHE");
-//
-////		System.out.println(this.graph_data[SCORE_AWAY][minute -2]);
-////		System.out.println(this.graph_data[SCORE_AWAY][minute -1]);
-//		System.out.println(this.graph_data[SCORE_AWAY][minute]);
-//		System.out.println(this.graph_data[SCORE_AWAY][minute +1]);
-//		System.out.println(this.graph_data[SCORE_AWAY][minute +2]);
+
+		// Logger.finest(this.graph_data[SCORE_HOME][minute -2]);
+		// Logger.finest(this.graph_data[SCORE_HOME][minute -1]);
+		// Logger.finest(this.graph_data[SCORE_HOME][minute]);
+		// Logger.finest(this.graph_data[SCORE_HOME][minute +1]);
+		// Logger.finest(this.graph_data[SCORE_HOME][minute +2]);
+		//
+		// Logger.finest("HEHEHE");
+		//
+		//// Logger.finest(this.graph_data[SCORE_AWAY][minute -2]);
+		//// Logger.finest(this.graph_data[SCORE_AWAY][minute -1]);
+		// Logger.finest(this.graph_data[SCORE_AWAY][minute]);
+		// Logger.finest(this.graph_data[SCORE_AWAY][minute +1]);
+		// Logger.finest(this.graph_data[SCORE_AWAY][minute +2]);
 
 	}
 
-	
 	public String toString() {
-		return "Match: " + league + " --- " + startTime + " ---:" + match_status_minutes + ":--- " + match_home + " --- "
-				+ score + " --- " + match_away + " --- " + match_handicap + " --- " + corner + " --- " + corner_line
-				+ " --- " + total_goals + " --- " + match_attach + " --- " + match_shoot + " --- " + live_events
-				+ " --- " + COL;
+		return "Match: " + league + " --- " + startTime + " ---:" + match_status_minutes + ":--- " + match_home
+				+ " --- " + score + " --- " + match_away + " --- " + match_handicap + " --- " + corner + " --- "
+				+ corner_line + " --- " + total_goals + " --- " + match_attach + " --- " + match_shoot + " --- "
+				+ live_events + " --- " + COL;
 	}
-	
-	
+
 }
