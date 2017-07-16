@@ -1,4 +1,4 @@
-
+		
 public class LogicController {
 	private static final String HALF_TIME_TEXT = "Half";
 

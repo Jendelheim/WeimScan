@@ -1,61 +1,65 @@
 import org.omg.Messaging.SyncScopeHelper;
+import java.util.InputMismatchException;
 
 public class Match {
 
 	// Tilldela alla v�rden (kanske endast de som kan vara null i senare skede
 	// till -1
-	String league; // Param 1
-	String startTime; // Param 2
+	private String league; // Param 1
+    private String startTime; // Param 2
 
-	String match_status_minutes; // Param 3
-	int minutes;
-	boolean started;
+    private	String match_status_minutes; // Param 3
+    private int minutes;
+    private boolean started;
 
 	// Hur parsear man s� man kontrollerar om det �r ett gult eller r�tt kort i
 	// str�ngen?
-	String match_home; // Param 4
+    private String match_home; // Param 4
 	// String hometeam;
-	int yellow_card_home;
-	int red_card_home;
+    private int yellow_card_home;
+    private int red_card_home;
 
-	String score; // Param 5
-	int home_score;
-	int away_score;
+    private String score; // Param 5
+    private int home_score;
+    private int away_score;
 
-	String match_away; // Param 6
+    private String match_away; // Param 6
 	// String awayteam;
-	int yellow_card_away;
-	int red_card_away;
+    private int yellow_card_away;
+    private int red_card_away;
 
-	String match_handicap; // Param 7
-	double current_handicap;
-	double onbefore_handicap;
+    private String match_handicap; // Param 7
+    private double current_handicap;
+    private double onbefore_handicap;
 
-	String corner; // Param 8
-	String corner_line; // Param 9
+    private String corner; // Param 8
+    private String corner_line; // Param 9
 
-	String total_goals; // Param 10
-	double current_goal_line;
-	double onbefore_goal_line;
-	double current_goal_line_half;
-	double onbefore_goal_line_half;
+    private String total_goals; // Param 10
+    private double current_goal_line;
+    private double onbefore_goal_line;
+    private double current_goal_line_half;
+    private double onbefore_goal_line_half;
 
-	String match_attach; // Param 11
-	int home_attach;
-	int away_attach;
+    private String match_attach; // Param 11
+    private int home_attach;
+    private int away_attach;
 
-	String match_shoot; // Param 12
-	int home_shoot;
-	int away_shoot;
+    private String match_shoot; // Param 12
+    private int home_shoot;
+    private int away_shoot;
 
-	String live_events; // Param 13
-	String COL; // Param 14
+    private	String live_events; // Param 13
+    private String COL; // Param 14
 
-	String c_analysis;
-	String o_analysis;
-	String l_analysis;
+    private String c_analysis;
+    private String o_analysis;
+    private String l_analysis;
 
-	int[][] graph_data = new int[6][120];
+
+
+
+    private  int[][] graph_data = new int[6][121];
 	static int SCORE_HOME = 0, SCORE_AWAY = 1, DANGEROUS_ATTACKS_HOME = 2, DANGEROUS_ATTACKS_AWAY = 3, SHOTS_HOME = 4,
 			SHOTS_AWAY = 5;
 
@@ -152,7 +156,15 @@ public class Match {
 		String[] goal_lines = total_goals.split(" ");
 
 		if (!total_goals.isEmpty()) {
-			current_goal_line = Double.parseDouble(goal_lines[0]);
+
+		    // Om matchen endast har ett pre-value på goalline tex. så fångas den i NFE då den
+            // inte är en double utan "(4.5", funkar detta att göra så? what could go wrong?
+		    try{
+                current_goal_line = Double.parseDouble(goal_lines[0]);
+            }
+			catch(NumberFormatException ime) {
+                ime.printStackTrace();
+		    }
 
 			if (goal_lines.length > 1) {
 				onbefore_goal_line = Double.parseDouble(goal_lines[1].replaceAll("[^\\d.]", ""));
@@ -164,10 +176,7 @@ public class Match {
 			}
 		}
 
-		// SKA KOMMENTERAS UPP N�R DE �R MATCHER LIVE, KNASAR ANNARS
-
 		try {
-			// Logger.info("Match-attach !!! - " + match_attach);
 			String[] attachs = match_attach.split(" - ");
 			home_attach = Integer.parseInt(attachs[0]);
 			away_attach = Integer.parseInt(attachs[1]);
@@ -177,7 +186,6 @@ public class Match {
 		}
 
 		try {
-			// Logger.info("Match-shoot !!! - " + match_shoot);
 			String[] shoots = match_shoot.split(" - ");
 			home_shoot = Integer.parseInt(shoots[0]);
 			away_shoot = Integer.parseInt(shoots[1]);
@@ -187,6 +195,10 @@ public class Match {
 		}
 
 	}
+
+	public String getLeague() { return league; }
+
+	public String getStartTime() { return startTime; }
 
 	public int getMinutes() {
 		return minutes;
@@ -215,6 +227,28 @@ public class Match {
 	public int getAwayShots() {
 		return away_shoot;
 	}
+
+	public int getYellow_card_home() { return yellow_card_home; }
+
+	public int getRed_card_home() { return red_card_home; }
+
+	public int getYellow_card_away() { return yellow_card_away; }
+
+	public int getRed_card_away() { return red_card_away; }
+
+	public double getCurrent_handicap() { return current_handicap; }
+
+	public double getOnbefore_handicap() { return onbefore_handicap; }
+
+    public double getCurrent_goal_line() { return current_goal_line;  }
+
+    public double getOnbefore_goal_line() { return onbefore_goal_line; }
+
+    public double getCurrent_goal_line_half() { return current_goal_line_half; }
+
+    public double getOnbefore_goal_line_half() { return onbefore_goal_line_half; }
+
+
 
 	public String getHomeTeam() {
 		return match_home;
@@ -247,6 +281,11 @@ public class Match {
 	public String getMatchShoot() {
 		return match_shoot;
 	}
+
+
+
+
+
 
 	public void setGraphData(int minute, int home_score, int away_score, int home_attach, int away_attach,
 			int home_shots, int away_shots) {
@@ -291,15 +330,15 @@ public class Match {
 		Logger.info("printGraphData-start at minute: " + minutes + " " + this.toString());
 		for (int i = 0; i < 6; i++) {
 			Logger.finest(i + " ");
-			for (int j = 0; j < 120; j++) {
-				System.out.println(graph_data[i][j]); // println skriver ut alla
+			for (int j = 0; j < 121; j++) {
+				System.out.print(graph_data[i][j]); // println skriver ut alla
 														// index f�r sig s� man
 														// kan se r�tt
 														// tilldelning.
 			}
 		}
 
-		Logger.info("printGraphData-end");
+		Logger.info("\nprintGraphData-end");
 	}
 
 	public void printData(int minute) {
