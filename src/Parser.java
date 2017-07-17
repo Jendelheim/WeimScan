@@ -41,7 +41,7 @@ public class Parser {
     static final String GET_SHOTS_HOME = "SELECT match_minute, shots_home WHERE match_id = ?";
     static final String GET_SHOTS_AWAY = "SELECT match_minute, shots_away WHERE match_id = ?";
 
-
+    static final String TEST = "TEST";
 
     private int startID = 0;
 
