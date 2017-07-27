@@ -130,6 +130,7 @@ public class Match {
 	public void assignProperties(String match_status_minutes, String score, String match_handicap, String total_goals,
 			String match_attach, String match_shoot) {
 
+		System.out.println("OMG OMG OMG" + match_handicap);
 		if (match_status_minutes.matches("\\d+")) {
 			minutes = Integer.parseInt(match_status_minutes);
 		}
@@ -145,7 +146,7 @@ public class Match {
 		String[] handicaps = match_handicap.split(" ");
 
 		if (!match_handicap.isEmpty()) {
-			current_handicap = Double.parseDouble(handicaps[0]);
+			current_handicap = Double.parseDouble(handicaps[0].replaceAll("[^\\d.]", ""));
 
 			if (handicaps.length > 1) {
 				onbefore_handicap = Double.parseDouble(handicaps[1].replaceAll("[^\\d.]", ""));

@@ -65,9 +65,17 @@ public class MainProgram {
 			break;
 
 		 case 3:
-		     print_live_matches();
+		     parser.getAllMatches();
+		     initializeScanner();
 		 break;
 
+		 case 4:
+		 	System.out.print("Enter match ID: ");
+
+			 int ID = keyboard.nextInt();
+			 parser.getSpecificMatchAwayAttach(ID);
+			 initializeScanner();
+			 break;
 
 		default:
 			// TODO handle this case
@@ -110,8 +118,6 @@ public class MainProgram {
 		return match;
 	}
 
-	// Kan �ndras till return_live_matches() sen d� man ska h�mta dom till
-	// hemsidan
 	public void print_live_matches() {
 		ArrayList<Match> liveMatches = liveMatch();
 
@@ -136,14 +142,6 @@ public class MainProgram {
 		}
 	}
 
-//	public void loop(ArrayList<Match> matches) {
-//		for (Match match : matches) {
-//			System.out.println(match);
-//			Logger.finest("match done");
-//		}
-//		Logger.info("matches loop done");
-//	}
-
 	public void calculateInconsistencies(Match match) {
 		printMessage("testing calc.match: " + match, null);
 		printMessage("hello my name is ", match.getAwayTeam());
@@ -156,6 +154,19 @@ public class MainProgram {
 
 		Logger.info("calculateInconsistencies(); finished!");
 
+	}
+
+	 // Måste göra om så get-metoderna från parser returnerar en int/double istället för void.
+	public double[] calculateScoreInconsistency(int ID){
+			logic.inconsistency(parser.getSpecificMatchHomeScore(ID), parser.getSpecificMatchAwayScore(ID));
+	}
+
+	public double[] calculateAttachInconsistency(int ID){
+			logic.inconsistency(parser.getSpecificMatchHomeAttach(ID), parser.getSpecificMatchAwayAttach(ID));
+	}
+
+	public double[] calculateShotsInconsistency(int ID){
+			logic.inconsistency(parser.getSpecificMatchHomeShots(ID), parser.getSpecificMatchAwayShots(ID));
 	}
 
 	public <T> void printMessage(String message, T value) {
