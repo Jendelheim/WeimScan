@@ -1,5 +1,7 @@
 		
 public class LogicController {
+
+	Parser parser = new Parser();
 	private static final String HALF_TIME_TEXT = "Half";
 
 	public boolean halftimeBreak(String match_status_minutes) {
@@ -8,29 +10,6 @@ public class LogicController {
 		return cond;
 	}
 
-	public int whichQuarter(int min) {
-		if (min < 0)
-			Logger.err("Unreasonable minute: " + min);
-		// This can be expressed as 1 + Integer.floor(90/15)
-		// but it is great for testing it.
-		if (min > 0 && min < 16) {
-			return 1;
-		} else if (min > 15 && min < 31) {
-			return 2;
-		} else if (min > 30 && min < 45) {
-			return 3;
-		} else if (min > 45 && min < 61) {
-			return 4;
-		} else if (min > 60 && min < 76) {
-			return 5;
-		} else if (min > 75 && min < 91) {
-			return 6;
-		} else if (min > 90) {
-			return 7; // Skulle kunna s�ttas som en String "Overtime" beroende
-						// p� var man vill anv�nda den.
-		} else
-			return -1;
-	}
 
 	public double[] inconsistency(int home_value, int away_value) {
 		double inconsistency = -1.0;
@@ -57,5 +36,47 @@ public class LogicController {
 				+ " away_value " + away_value);
 		return new double[] { advantage + inconsistency };
 	}
+
+	// get all inconsistencies for specific ID
+
+//	public double getScoreInconsistency(){
+//		double scoreIncon;
+//		double[] values= inconsistency(1,1 );
+//		scoreIncon = values[0];
+//		return scoreIncon;
+//	}
+//
+//	public double getAttachInconsitency(){
+//		double attachIncon;
+//		double[] values= inconsistency(1,1 );
+//		attachIncon = values[0];
+//		return attachIncon;
+//
+//	}
+//
+//	public double getShotInconsitency(){
+//		double shotIncon;
+//		double[] values= inconsistency(1,1 );
+//		shotIncon = values[0];
+//		return shotIncon;
+//	}
+
+	// Måste göra om så get-metoderna från parser returnerar en int/double istället för void.
+
+//	public double[] calculateScoreInconsistency(int ID){
+//		double[] values = inconsistency(parser.getSpecificMatchHomeScore(ID), parser.getSpecificMatchAwayScore(ID));
+//		return values;
+//	}
+//
+//	public double[] calculateAttachInconsistency(int ID){
+//		double[] values = inconsistency(parser.getSpecificMatchHomeAttach(ID), parser.getSpecificMatchAwayAttach(ID));
+//		return values;
+//	}
+//
+//	public double[] calculateShotsInconsistency(int ID){
+//		double[] values = inconsistency(parser.getSpecificMatchHomeShots(ID), parser.getSpecificMatchAwayShots(ID));
+//		return values;
+//	}
+//
 
 }

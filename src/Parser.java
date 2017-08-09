@@ -3,6 +3,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,45 +25,45 @@ public class Parser {
     // SQL
 
     // live_matches
-    static final String GET_ALL_MATCHES = "SELECT * FROM live_matches";
-    static final String INSERT_NEW_LIVE_MATCH = "INSERT INTO live_matches (ID, league, start_time, minutes, home_team, yellow_card_home, red_card_home, home_score, away_team, yellow_card_away, red_card_away, away_score, current_handicap, onbefore_handicap, current_goal_line, onbefore_goal_line, current_goal_line_half, onbefore_goal_line_half, home_attach, away_attach, home_shoot, away_shoot)VALUES (?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?)";
-    static final String GET_ALL_LIVE_MATCHES = "SELECT * FROM live_matches WHERE minutes > 0";
-    static final String ALREADY_IN_DATABASE = "SELECT * FROM live_matches WHERE home_team = ?;";
-    static final String UPDATE_LIVE_MATCH = "UPDATE live_matches SET (league, start_time, minutes, home_team, yellow_card_home, red_card_home, home_score, away_team, yellow_card_away, red_card_away, away_score, current_handicap, onbefore_handicap, current_goal_line, onbefore_goal_line, current_goal_line_half, onbefore_goal_line_half, home_attach, away_attach, home_shoot, away_shoot)WHERE ID = ? VALUES (?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?)";
+    private static final String GET_ALL_MATCHES = "SELECT * FROM live_matches";
+    private static final String INSERT_NEW_LIVE_MATCH = "INSERT INTO live_matches (ID, league, start_time, minutes, home_team, yellow_card_home, red_card_home, home_score, away_team, yellow_card_away, red_card_away, away_score, current_handicap, onbefore_handicap, current_goal_line, onbefore_goal_line, current_goal_line_half, onbefore_goal_line_half, home_attach, away_attach, home_shoot, away_shoot)VALUES (?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?)";
+    private static final String GET_ALL_LIVE_MATCHES = "SELECT * FROM live_matches WHERE minutes > 0";
+    private static final String ALREADY_IN_DATABASE = "SELECT * FROM live_matches WHERE home_team = ?;";
+    private static final String UPDATE_LIVE_MATCH = "UPDATE live_matches SET league = ?, start_time = ?, minutes = ?, home_team = ?, yellow_card_home = ?, red_card_home = ?, home_score = ?, away_team = ?, yellow_card_away = ?, red_card_away = ?, away_score = ?, current_handicap = ?, onbefore_handicap = ?, current_goal_line = ?, onbefore_goal_line = ?, current_goal_line_half = ?, onbefore_goal_line_half = ?, home_attach = ?, away_attach = ?, home_shoot = ?, away_shoot = ? WHERE ID = ?";
 
-    static final String GET_SPECIFIC_MATCH = "SELECT * WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_LEAGUE = "SELECT (league) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_STARTTIME = "SELECT (start_time) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_MINUTES = "SELECT (minutes) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_HOMETEAM= "SELECT (home_team) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_YELLOW_CARD_HOME = "SELECT (yellow_card_home) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_RED_CARD_HOME = "SELECT (red_card_home) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_HOMESCORE = "SELECT (home_score) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_AWAYTEAM= "SELECT (away_team) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_YELLOW_CARD_AWAY = "SELECT (yellow_card_away) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_RED_CARD_AWAY = "SELECT (red_card_away) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_AWAYSCORE = "SELECT (away_score) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_CURRENT_HANDICAP = "SELECT (current_handicap) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_ONBEFORE_HANDICAP = "SELECT (onbefore_handicap) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_CURRENT_GOALLINE = "SELECT (current_goal_line) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_ONBEFORE_GOALLINE = "SELECT (onbefore_goal_line) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_CURRENT_GOALLINE_HALF = "SELECT (current_goal_line_half) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_ONBEFORE_GOALLINE_HALF = "SELECT (onbefore_goal_line_half) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_HOME_ATTACH = "SELECT home_attach FROM live_matches WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_AWAY_ATTACH = "SELECT away_attach FROM live_matches WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_HOME_SHOTS = "SELECT (home_shoot) WHERE ID = ?";
-    static final String GET_SPECIFIC_MATCH_AWAY_SHOTS = "SELECT (away_shoot) WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH = "SELECT * WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_LEAGUE = "SELECT league FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_STARTTIME = "SELECT start_time FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_MINUTES = "SELECT minutes FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_HOMETEAM= "SELECT home_team FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_YELLOW_CARD_HOME = "SELECT yellow_card_home FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_RED_CARD_HOME = "SELECT red_card_home FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_HOMESCORE = "SELECT home_score FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_AWAYTEAM= "SELECT away_team FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_YELLOW_CARD_AWAY = "SELECT yellow_card_away FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_RED_CARD_AWAY = "SELECT red_card_away FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_AWAYSCORE = "SELECT away_score FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_CURRENT_HANDICAP = "SELECT current_handicap FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_ONBEFORE_HANDICAP = "SELECT onbefore_handicap FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_CURRENT_GOALLINE = "SELECT current_goal_line FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_ONBEFORE_GOALLINE = "SELECT onbefore_goal_line FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_CURRENT_GOALLINE_HALF = "SELECT current_goal_line_half FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_ONBEFORE_GOALLINE_HALF = "SELECT onbefore_goal_line_half FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_HOME_ATTACH = "SELECT home_attach FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_AWAY_ATTACH = "SELECT away_attach FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_HOME_SHOTS = "SELECT home_shoot FROM live_matches WHERE ID = ?";
+    private static final String GET_SPECIFIC_MATCH_AWAY_SHOTS = "SELECT away_shoot FROM live_matches WHERE ID = ?";
 
     // graph_data
-    static final String INSERT_NEW_GRAPH_DATA = "INSERT INTO graph_data (match_id, match_minute, home_score, away_score, dangerous_attacks_home, dangerous_attacks_away, shots_home, shots_away) VALUES (?,?,?,?,? ,?,?)";
-    static final String UPDATE_GRAPH_DATA = "UPDATE graph_data SET (league, start_time, minutes, home_team, yellow_card_home, red_card_home, home_score, away_team, yellow_card_away, red_card_away, away_score, current_handicap, onbefore_handicap, current_goal_line, onbefore_goal_line, current_goal_line_half, onbefore_goal_line_half, home_attach, away_attach, home_shoot, away_shoot)WHERE ID = ? VALUES (?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?)";
-    static final String GET_GRAPH_DATA_FOR_MATCH = "SELECT * FROM graph_data WHERE match_id = ?;";
-    static final String GET_HOME_SCORE_GRAPH_DATA = "SELECT match_minute, home_score WHERE match_id = ?";
-    static final String GET_AWAY_SCORE_GRAPH_DATA = "SELECT match_minute, away_score WHERE match_id = ?";
-    static final String GET_DANGEROUS_ATTACKS_HOME = "SELECT match_minute, dangerous_attack_home WHERE match_id = ?";
-    static final String GET_DANGEROUS_ATTACKS_AWAY = "SELECT match_minute, dangerous_attacks_away WHERE match_id = ?";
-    static final String GET_SHOTS_HOME = "SELECT match_minute, shots_home WHERE match_id = ?";
-    static final String GET_SHOTS_AWAY = "SELECT match_minute, shots_away WHERE match_id = ?";
+    private static final String INSERT_NEW_GRAPH_DATA = "INSERT INTO graph_data (match_id, match_minute, home_score, away_score, dangerous_attacks_home, dangerous_attacks_away, shots_home, shots_away) VALUES (?,?,?,?,? ,?,?)";
+    private static final String UPDATE_GRAPH_DATA = "UPDATE graph_data SET league = ?, start_time = ?, minutes = ?, home_team = ?, yellow_card_home = ?, red_card_home = ?, home_score = ?, away_team = ?, yellow_card_away = ?, red_card_away = ?, away_score = ?, current_handicap = ?, onbefore_handicap = ?, current_goal_line = ?, onbefore_goal_line = ?, current_goal_line_half = ?, onbefore_goal_line_half = ?, home_attach = ?, away_attach = ?, home_shoot = ?, away_shoot = ? WHERE ID = ?";
+    private static final String GET_GRAPH_DATA_FOR_MATCH = "SELECT * FROM graph_data WHERE match_id = ?;";
+    private static final String GET_HOME_SCORE_GRAPH_DATA = "SELECT match_minute, home_score FROM graph_data WHERE match_id = ?";
+    private static final String GET_AWAY_SCORE_GRAPH_DATA = "SELECT match_minute, away_score FROM graph_data WHERE match_id = ?";
+    private static final String GET_DANGEROUS_ATTACKS_HOME = "SELECT match_minute, dangerous_attack_home FROM graph_data WHERE match_id = ?";
+    private static final String GET_DANGEROUS_ATTACKS_AWAY = "SELECT match_minute, dangerous_attacks_away FROM graph_data WHERE match_id = ?";
+    private static final String GET_SHOTS_HOME = "SELECT match_minute, shots_home FROM graph_data WHERE match_id = ?";
+    private static final String GET_SHOTS_AWAY = "SELECT match_minute, shots_away FROM graph_data WHERE match_id = ?";
 
     private int startID = 0;
 
@@ -151,7 +152,12 @@ public class Parser {
                 }
 
                 for (int i = 0; i < 1; i++) {
-                    Document document = getDocument();
+                    Document document = null;
+                    try {
+                        document = getDocument();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     Logger.fine("STARTED THREAD EL NUMBERO DEL: " + i);
 
                     Logger.info("scrapeMatchlist();");
@@ -298,6 +304,7 @@ public class Parser {
             prstmt.setDouble(19, match.getAwayAttach());
             prstmt.setDouble(20, match.getHomeShots());
             prstmt.setDouble(21, match.getAwayShots());
+            prstmt.setInt(22, id);
 
 
             prstmt.executeUpdate(); // http://stackoverflow.com/questions/1905607/cannot-issue-data-manipulation-statements-with-executequery
@@ -325,7 +332,7 @@ public class Parser {
 
 
             ResultSet rs= prstmt.executeQuery(); // http://stackoverflow.com/questions/1905607/cannot-issue-data-manipulation-statements-with-executequery
-            printingResultSet(rs, " getAllMatches() ", "");
+            printingResultSet(rs, " getAllMatches() ");
         } catch (SQLException se) {
             se.printStackTrace();
         } catch (Exception e) {
@@ -344,144 +351,155 @@ public class Parser {
 
     // get all stats for specific ID
 
+//
+//    public void getSpecificMatch(int ID){
+//       genericDatabaseCall(ID, GET_SPECIFIC_MATCH, " getSpecificMatch ");
+//    }
 
-    public void genericDatabaseCall(int ID, String preparedStatement, String methodName){
-        PreparedStatement prstmt = null;
-        Connection connection = null;
-
-        try {
-            connection = getConnection();
-
-            prstmt = connection.prepareStatement(preparedStatement);
-
-            prstmt.setInt(1, ID);
-
-            ResultSet rs= prstmt.executeQuery(); // http://stackoverflow.com/questions/1905607/cannot-issue-data-manipulation-statements-with-executequery
-            printingResultSet(rs, methodName, preparedStatement);
-
-            // TEST
-
-            int testNummer = Integer.parseInt(getFirstResultSetItem(rs));
-
-            System.out.println("TESTNUMMER PLZ");
-            System.out.println(testNummer);
-
-
-
-        } catch (SQLException se) {
-            se.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        finally {
-            closePrstmt(prstmt);
-            closeConnection(connection);
-        }
+    public String getSpecificMatchLeague(int ID){
+       return stringDatabaseCall(ID, GET_SPECIFIC_MATCH_LEAGUE, " getSpecificMatchLeague ");
     }
 
-    public void getSpecificMatch(int ID){
-       genericDatabaseCall(ID, GET_SPECIFIC_MATCH, " getSpecificMatch ");
+    public String getSpecificMatchStartTime(int ID){
+        return stringDatabaseCall(ID, GET_SPECIFIC_MATCH_STARTTIME, " getSpecificMatchStartTime ");
     }
 
-    public void getSpecificMatchLeague(int ID){
-       genericDatabaseCall(ID, GET_SPECIFIC_MATCH_LEAGUE, " getSpecificMatchLeague ");
+    public int getSpecificMatchMinutes(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_MINUTES, " getSpecificMatchMinutes ");
     }
 
-    public void getSpecificMatchStartTime(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_STARTTIME, " getSpecificMatchStartTime ");
+    public String getSpecificMatchHomeTeam(int ID){
+        return stringDatabaseCall(ID, GET_SPECIFIC_MATCH_HOMETEAM, " getSpecificMatchHomeTeam ");
     }
 
-    public void getSpecificMatchMinutes(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_MINUTES, " getSpecificMatchMinutes ");
+    public int getYellowCardHome(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_YELLOW_CARD_HOME, " getSpecificMatchYellowCardHome ");
     }
 
-    public void getSpecificMatchHomeTeam(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_HOMETEAM, " getSpecificMatchHomeTeam ");
+    public int getRedCardHome(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_RED_CARD_HOME, " getSpecificMatchRedCardHome ");
     }
 
-    public void getSpecificMatchYellowCardHome(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_YELLOW_CARD_HOME, " getSpecificMatchYellowCardHome ");
+    public int getHomeScore(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_HOMESCORE, " getSpecificMatchHomeScore ");
     }
 
-    public void getSpecificMatchRedCardHome(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_RED_CARD_HOME, " getSpecificMatchRedCardHome ");
+    public String getAwayTeam(int ID){
+        return stringDatabaseCall(ID, GET_SPECIFIC_MATCH_AWAYTEAM, " getSpecificMatchAwayTeam ");
     }
 
-    public void getSpecificMatchHomeScore(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_HOMESCORE, " getSpecificMatchHomeScore ");
+    public int getYellowCardAway(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_YELLOW_CARD_AWAY, " getSpecificMatchYellowCardAway ");
     }
 
-    public void getSpecificMatchAwayTeam(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_AWAYTEAM, " getSpecificMatchAwayTeam ");
+    public int getRedCardAway(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_RED_CARD_AWAY, " getSpecificMatchRedCardAway ");
     }
 
-    public void getSpecificMatchYellowCardAway(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_YELLOW_CARD_AWAY, " getSpecificMatchYellowCardAway ");
+    public int getAwayScore(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_AWAYSCORE, " getSpecificMatchAwayScore ");
     }
 
-    public void getSpecificMatchRedCardAway(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_RED_CARD_AWAY, " getSpecificMatchRedCardAway ");
+    public double getCurrentHandicap(int ID){
+        return doubleDatabaseCall(ID, GET_SPECIFIC_MATCH_CURRENT_HANDICAP, " getSpecificMatchCurrentHandicap ");
     }
 
-    public void getSpecificMatchAwayScore(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_AWAYSCORE, " getSpecificMatchAwayScore ");
+    public double getOnbeforeHandicap(int ID){
+        return doubleDatabaseCall(ID, GET_SPECIFIC_MATCH_ONBEFORE_HANDICAP, " getSpecificMatchOnbeforeHandicap ");
     }
 
-    public void getSpecificMatchCurrentHandicap(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_CURRENT_HANDICAP, " getSpecificMatchCurrentHandicap ");
+    public double getCurrentGoalLine(int ID){
+        return doubleDatabaseCall(ID, GET_SPECIFIC_MATCH_CURRENT_GOALLINE, " getSpecificMatchCurrentGoalLine ");
     }
 
-    public void getSpecificMatchOnbeforeHandicap(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_ONBEFORE_HANDICAP, " getSpecificMatchOnbeforeHandicap ");
+    public double getOnbeforeGoalLine(int ID){
+        return doubleDatabaseCall(ID, GET_SPECIFIC_MATCH_ONBEFORE_GOALLINE, " getSpecificMatchOnbeforeGoalLine ");
     }
 
-    public void getSpecificMatchCurrentGoalLine(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_CURRENT_GOALLINE, " getSpecificMatchCurrentGoalLine ");
+    public double getCurrentGoalLineHalf(int ID){
+        return doubleDatabaseCall(ID, GET_SPECIFIC_MATCH_CURRENT_GOALLINE_HALF, " getSpecificMatchCurrentGoalLineHalf ");
     }
 
-    public void getSpecificMatchOnbeforeGoalLine(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_ONBEFORE_GOALLINE, " getSpecificMatchOnbeforeGoalLine ");
+    public double getOnbeforeGoalLineHalf(int ID){
+        return doubleDatabaseCall(ID, GET_SPECIFIC_MATCH_ONBEFORE_GOALLINE_HALF, " getSpecificMatchOnbeforeGoalLineHalf ");
     }
 
-    public void getSpecificMatchCurrentGoalLineHalf(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_CURRENT_GOALLINE_HALF, " getSpecificMatchCurrentGoalLineHalf ");
+    public int getHomeAttach(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_HOME_ATTACH, " getSpecificMatchAwayAttach ");
     }
 
-    public void getSpecificMatchOnbeforeGoalLineHalf(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_ONBEFORE_GOALLINE_HALF, " getSpecificMatchOnbeforeGoalLineHalf ");
+    public int getAwayAttach(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_AWAY_ATTACH, " getSpecificMatchAwayAttach ");
     }
 
-    public double getSpecificMatchHomeAttach(int ID){
-        double value;
-
-        value = genericDatabaseCall(ID, GET_SPECIFIC_MATCH_HOME_ATTACH, " getSpecificMatchHomeAttach ");
-
-        return value;
+    public int getHomeShots(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_HOME_SHOTS, " getSpecificMatchHomeShots ");
     }
 
-    public double getSpecificMatchAwayAttach(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_AWAY_ATTACH, " getSpecificMatchAwayAttach ");
+    public int getAwayShots(int ID){
+        return intDatabaseCall(ID, GET_SPECIFIC_MATCH_AWAY_SHOTS, " getSpecificMatchAwayShots ");
     }
 
-    public void getSpecificMatchHomeShots(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_HOME_SHOTS, " getSpecificMatchHomeShots ");
-    }
+    // get graph_data
 
-    public void getSpecificMatchAwayShots(int ID){
-        genericDatabaseCall(ID, GET_SPECIFIC_MATCH_AWAY_SHOTS, " getSpecificMatchAwayShots ");
-    }
+    // Vad ska dom egentligen returna? Ska det vara enkla ints eller ska det vara arrayer med ints?
+    // Eller ska det kanske vara en int men inte bara med villkoret ID utan även minut?
+
+//    public int[] getAllData(int ID){
+//        int[] data = null;
+//
+//        return data;
+//    }
+//
+//    public int getMatchMinute(int ID){
+//        return intDatabaseCall(ID, );
+//    }
+//
+//    public int getScoreHome(int ID){
+//        return;
+//    }
+//
+//    public int getScoreAway(int ID){
+//        return;
+//    }
+//
+//    public int getAttachHome(int ID){
+//        return;
+//    }
+//
+//    public int getAttachAway(int ID){
+//        return;
+//    }
+//
+//    public int getShotsHome(int ID){
+//        return;
+//    }
+//
+//    public int getShotsAway(int ID){
+//        return;
+//    }
 
 
-    // get all inconsistencies for specific ID
 
 
 
 
-
-
-
-
+//
+//
+//    // get all inconsistencies for specific ID
+//
+//    public void getScoreInconsistency(){
+//
+//    }
+//
+//    public void getAttachInconsitency(){
+//
+//    }
+//
+//    public void getShotInconsitency(){
+//
+//    }
+//
 
 
     public void createMatchObjects(ArrayList<String> values) {
@@ -522,25 +540,29 @@ public class Parser {
         Logger.err("createMatchObjects(); finished!");
     }
 
-    protected Document getDocument() {
-        Document document = null;
-        long timeNow = System.currentTimeMillis();
+    protected Document getDocument() throws IOException {
+        File input = new File("C:\\Users\\Victo\\Downloads\\matchList.html");
 
-        // request for the first time and after grace delay
-        if (savedDocument != null && (REQUEST_GRACE_TIME > (timeNow - documentTimestamp))) {
-            Logger.finest("Graced document returned");
-            return savedDocument;
-        } else {
-            try {
-                Logger.finest("Requesting document");
-                document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
-                savedDocument = document;
-                documentTimestamp = System.currentTimeMillis();
-            } catch (IOException e) {
-                Logger.info("Connection Error in jsoup module");
-                e.printStackTrace();
-            }
-        }
+            Document document = Jsoup.parse(input, "UTF-8", "http://totalcorner.com/today");
+
+//        Document document = null;
+//        long timeNow = System.currentTimeMillis();
+//
+//        // request for the first time and after grace delay
+//        if (savedDocument != null && (REQUEST_GRACE_TIME > (timeNow - documentTimestamp))) {
+//            Logger.finest("Graced document returned");
+//            return savedDocument;
+//        } else {
+//            try {
+//                Logger.finest("Requesting document");
+//                document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
+//                savedDocument = document;
+//                documentTimestamp = System.currentTimeMillis();
+//            } catch (IOException e) {
+//                Logger.info("Connection Error in jsoup module");
+//                e.printStackTrace();
+//            }
+//        }
         return document;
     }
 
@@ -561,27 +583,125 @@ public class Parser {
         Logger.fine("assignProperties(); finished!");
     }
 
-    public void printingResultSet(ResultSet rs, String nameOfResultSet, String message) throws SQLException {
+    public void printingResultSet(ResultSet rs, String nameOfResultSet) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
-        System.out.println("Printing: " + nameOfResultSet + " (" + message + ")");
+        System.out.println("Printing: " + nameOfResultSet);
         int columnsNumber = rsmd.getColumnCount();
         while (rs.next()) {
             for (int i = 1; i <= columnsNumber; i++) {
                 if (i > 1) System.out.print(",  ");
                 String columnValue = rs.getString(i);
-                System.out.print("KEKEKEK" + columnValue + " " + rsmd.getColumnName(i));
+                System.out.print("columnValue: " + columnValue + " " + rsmd.getColumnName(i));
             }
             System.out.println("");
         }
     }
 
-    public String getFirstResultSetItem(ResultSet rs) throws SQLException {
-        ResultSetMetaData rsmd = rs.getMetaData();
-        String columnValue = null;
+
+    public int intDatabaseCall(int ID, String preparedStatement, String methodName){
+        int value = -999;
+        PreparedStatement prstmt = null;
+        Connection connection = null;
+
+        try {
+            connection = getConnection();
+            prstmt = connection.prepareStatement(preparedStatement);
+            prstmt.setInt(1, ID);
+            ResultSet rs= prstmt.executeQuery(); // http://stackoverflow.com/questions/1905607/cannot-issue-data-manipulation-statements-with-executequery
+            printingResultSet(rs, preparedStatement);
+            value = getFirstResultSetItemInt(rs);
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        finally {
+            closePrstmt(prstmt);
+            closeConnection(connection);
+        }
+
+        return value;
+    }
+
+    public double doubleDatabaseCall(int ID, String preparedStatement, String methodName){
+        double value = -999;
+        PreparedStatement prstmt = null;
+        Connection connection = null;
+
+        try {
+            connection = getConnection();
+            prstmt = connection.prepareStatement(preparedStatement);
+            prstmt.setInt(1, ID);
+            ResultSet rs= prstmt.executeQuery(); // http://stackoverflow.com/questions/1905607/cannot-issue-data-manipulation-statements-with-executequery
+            printingResultSet(rs, preparedStatement);
+            value = getFirstResultSetItemDouble(rs);
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        finally {
+            closePrstmt(prstmt);
+            closeConnection(connection);
+        }
+
+        return value;
+    }
+
+    public String stringDatabaseCall(int ID, String preparedStatement, String methodName){
+        String value = "-999";
+        PreparedStatement prstmt = null;
+        Connection connection = null;
+
+        try {
+            connection = getConnection();
+            prstmt = connection.prepareStatement(preparedStatement);
+            prstmt.setInt(1, ID);
+            ResultSet rs= prstmt.executeQuery(); // http://stackoverflow.com/questions/1905607/cannot-issue-data-manipulation-statements-with-executequery
+            printingResultSet(rs, preparedStatement);
+            value = getFirstResultSetItemString(rs);
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        finally {
+            closePrstmt(prstmt);
+            closeConnection(connection);
+        }
+
+        return value;
+    }
+
+    public int getFirstResultSetItemInt(ResultSet rs) throws SQLException {
+        int columnValue = -999;
         while (rs.next()) {
-            for (int i = 1; i <= 2; i++) {
-                columnValue = rs.getString(i);
-            }
+                columnValue = rs.getInt(1);
+
+        }
+        return columnValue;
+    }
+
+    public Double getFirstResultSetItemDouble(ResultSet rs) throws SQLException {
+
+        double columnValue = -999.9;
+        while (rs.next()) {
+            String value = rs.getString(1);
+            columnValue = Double.parseDouble(value);
+        }
+        return columnValue;
+    }
+
+    public String getFirstResultSetItemString(ResultSet rs) throws SQLException {
+        String columnValue = "-999";
+        while (rs.next()) {
+           columnValue = rs.getString(1);
         }
         return columnValue;
     }

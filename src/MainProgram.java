@@ -51,8 +51,9 @@ public class MainProgram {
 		case 1:
 			Logger.finest("1: parsing");
 			parser.addThread().start();
+
+			Logger.info("case 1 finished!");
 			initializeScanner();
-			System.out.println("hejejejej");
 			break;
 
 		// Print graphData for each live game
@@ -61,19 +62,28 @@ public class MainProgram {
 			for (Match m : liveMatch()) {
 				m.printGraphData();
 			}
+			Logger.info("case 2 finished!");
+
 			initializeScanner();
+
 			break;
 
 		 case 3:
 		     parser.getAllMatches();
-		     initializeScanner();
-		 break;
+			 Logger.info("case 3 finished!");
+
+			 initializeScanner();
+			 break;
 
 		 case 4:
-		 	System.out.print("Enter match ID: ");
+		 	Logger.info("Enter match ID: ");
 
 			 int ID = keyboard.nextInt();
-			 parser.getSpecificMatchAwayAttach(ID);
+			 // parser.getSpecificMatchAwayAttach(ID);
+
+			 printAllGetMethods(ID);
+
+			 Logger.info("case 4 finished!");
 			 initializeScanner();
 			 break;
 
@@ -90,6 +100,36 @@ public class MainProgram {
 				match.getAwayAttach(), match.getHomeShots(), match.getAwayShots());
 
 		Logger.err("setGraphData(); finished!");
+	}
+
+	public void printAllGetMethods(int id){
+
+		parser.getSpecificMatchLeague(id);
+		parser.getSpecificMatchStartTime(id);
+		parser.getSpecificMatchMinutes(id);
+
+		parser.getSpecificMatchHomeTeam(id);
+		parser.getYellowCardHome(id);
+		parser.getRedCardHome(id);
+		parser.getHomeScore(id);
+
+		parser.getAwayTeam(id);
+		parser.getYellowCardAway(id);
+		parser.getRedCardAway(id);
+		parser.getAwayScore(id);
+
+		parser.getCurrentHandicap(id);
+		parser.getOnbeforeHandicap(id);
+
+		parser.getCurrentGoalLine(id);
+		parser.getOnbeforeGoalLine(id);
+		parser.getCurrentGoalLineHalf(id);
+		parser.getOnbeforeGoalLineHalf(id);
+
+		parser.getHomeAttach(id);
+		parser.getAwayAttach(id);
+		parser.getHomeShots(id);
+		parser.getAwayShots(id);
 	}
 
 	public ArrayList<Match> liveMatch() {
@@ -136,38 +176,27 @@ public class MainProgram {
 			Logger.finest("away_shots" + m.getAwayShots());
 
 			Logger.err("calculateInconsistencies();");
-			calculateInconsistencies(m);
+//			calculateInconsistencies(m);
 
 			Logger.info("print_live_matches(); finished!");
 		}
 	}
 
-	public void calculateInconsistencies(Match match) {
-		printMessage("testing calc.match: " + match, null);
-		printMessage("hello my name is ", match.getAwayTeam());
-		Logger.info(match.getHomeTeam() + " vs " + match.getAwayTeam());
-		logic.inconsistency(match.getHomeScore(), match.getAwayScore());
-		logic.inconsistency(match.getHomeAttach(), match.getAwayAttach());
-		logic.inconsistency(match.getHomeShots(), match.getAwayShots());
-		Logger.info("testing graphData: ");
-		match.printData(match.getMinutes());
+//	public void calculateInconsistencies(Match match) {
+//		printMessage("testing calc.match: " + match, null);
+//		printMessage("hello my name is ", match.getAwayTeam());
+//		Logger.info(match.getHomeTeam() + " vs " + match.getAwayTeam());
+//		logic.inconsistency(match.getHomeScore(), match.getAwayScore());
+//		logic.inconsistency(match.getHomeAttach(), match.getAwayAttach());
+//		logic.inconsistency(match.getHomeShots(), match.getAwayShots());
+//		Logger.info("testing graphData: ");
+//		match.printData(match.getMinutes());
+//
+//		Logger.info("calculateInconsistencies(); finished!");
+//
+//	}
 
-		Logger.info("calculateInconsistencies(); finished!");
 
-	}
-
-	 // Måste göra om så get-metoderna från parser returnerar en int/double istället för void.
-	public double[] calculateScoreInconsistency(int ID){
-			logic.inconsistency(parser.getSpecificMatchHomeScore(ID), parser.getSpecificMatchAwayScore(ID));
-	}
-
-	public double[] calculateAttachInconsistency(int ID){
-			logic.inconsistency(parser.getSpecificMatchHomeAttach(ID), parser.getSpecificMatchAwayAttach(ID));
-	}
-
-	public double[] calculateShotsInconsistency(int ID){
-			logic.inconsistency(parser.getSpecificMatchHomeShots(ID), parser.getSpecificMatchAwayShots(ID));
-	}
 
 	public <T> void printMessage(String message, T value) {
 		Logger.info(message + value);
