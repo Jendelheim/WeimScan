@@ -541,28 +541,28 @@ public class Parser {
     }
 
     protected Document getDocument() throws IOException {
-        File input = new File("C:\\Users\\Victo\\Downloads\\matchList.html");
-
-            Document document = Jsoup.parse(input, "UTF-8", "http://totalcorner.com/today");
-
-//        Document document = null;
-//        long timeNow = System.currentTimeMillis();
+//        File input = new File("C:\\Users\\Victo\\Downloads\\matchList.html");
 //
-//        // request for the first time and after grace delay
-//        if (savedDocument != null && (REQUEST_GRACE_TIME > (timeNow - documentTimestamp))) {
-//            Logger.finest("Graced document returned");
-//            return savedDocument;
-//        } else {
-//            try {
-//                Logger.finest("Requesting document");
-//                document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
-//                savedDocument = document;
-//                documentTimestamp = System.currentTimeMillis();
-//            } catch (IOException e) {
-//                Logger.info("Connection Error in jsoup module");
-//                e.printStackTrace();
-//            }
-//        }
+//            Document document = Jsoup.parse(input, "UTF-8", "http://totalcorner.com/today");
+
+        Document document = null;
+        long timeNow = System.currentTimeMillis();
+
+        // request for the first time and after grace delay
+        if (savedDocument != null && (REQUEST_GRACE_TIME > (timeNow - documentTimestamp))) {
+            Logger.finest("Graced document returned");
+            return savedDocument;
+        } else {
+            try {
+                Logger.finest("Requesting document");
+                document = Jsoup.connect("http://www.totalcorner.com/match/today").get();
+                savedDocument = document;
+                documentTimestamp = System.currentTimeMillis();
+            } catch (IOException e) {
+                Logger.info("Connection Error in jsoup module");
+                e.printStackTrace();
+            }
+        }
         return document;
     }
 

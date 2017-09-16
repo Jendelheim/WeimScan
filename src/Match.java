@@ -135,7 +135,9 @@ public class Match {
 			minutes = Integer.parseInt(match_status_minutes);
 		}
 
+		System.out.println("TESTETSTEST");
 		String[] goals = score.split(" - ");
+		System.out.println("TESTETETET" + goals[0]);
 		home_score = Integer.parseInt(goals[0]);
 		away_score = Integer.parseInt(goals[1]);
 
